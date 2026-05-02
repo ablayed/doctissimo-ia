@@ -1,6 +1,9 @@
+import { useMemo } from 'react'
+
 type Props = {
   open: boolean
   onSubmit: (pseudo: string) => void
+  onSkip: () => void
 }
 
 const suggestions = [
@@ -20,47 +23,61 @@ const suggestions = [
   'MaPuceMai05',
 ]
 
-export default function PseudoModal({ open, onSubmit }: Props) {
+export default function PseudoModal({ open, onSubmit, onSkip }: Props) {
+  const chips = useMemo(() => [...suggestions].sort(() => Math.random() - 0.5).slice(0, 6), [])
   if (!open) return null
-  const chips = [...suggestions].sort(() => Math.random() - 0.5).slice(0, 6)
+
   return (
-    <div className="modal-backdrop">
-      <div className="modal-content">
-        <h2>Bienvenue dans la communauté Doctissimo.IA !</h2>
-        <p>Choisissez votre pseudo (anonyme, stocké uniquement sur votre navigateur) :</p>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            const formData = new FormData(event.currentTarget)
-            const value = String(formData.get('pseudo') || '').trim()
-            if (value.length >= 3) onSubmit(value)
-          }}
-        >
-          <input name="pseudo" maxLength={30} pattern="[A-Za-z0-9_-]+" />
-          <div className="pseudo-suggestions">
-            {chips.map((item) => (
+    <div className="pseudo-modal-backdrop">
+      <div className="pseudo-modal">
+        <div className="pseudo-modal-titlebar">
+          <span>Bienvenue dans la communaute Doctissimo.IA !</span>
+          <span>x</span>
+        </div>
+        <div className="pseudo-modal-body">
+          <div style={{ marginBottom: 8, color: '#800040', fontWeight: 'bold' }}>Inscription gratuite - En 1 clic</div>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault()
+              const formData = new FormData(event.currentTarget)
+              const value = String(formData.get('pseudo') || '').trim()
+              if (/^[A-Za-z0-9_-]{3,30}$/.test(value)) {
+                onSubmit(value)
+              }
+            }}
+          >
+            <label htmlFor="pseudo">Choisissez votre pseudo (anonyme, stocke uniquement sur votre navigateur) :</label>
+            <input id="pseudo" name="pseudo" type="text" maxLength={30} pattern="[A-Za-z0-9_-]+" />
+            <div className="pseudo-suggestions">
+              {chips.map((item) => (
+                <button
+                  type="button"
+                  key={item}
+                  className="pseudo-chip"
+                  onClick={(event) => {
+                    const input = event.currentTarget.form?.elements.namedItem('pseudo') as HTMLInputElement | null
+                    if (input) input.value = item
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+            <div className="pseudo-modal-actions">
               <button
                 type="button"
-                key={item}
-                className="pseudo-chip"
-                onClick={(event) => {
-                  const input = event.currentTarget.parentElement?.parentElement?.querySelector(
-                    'input[name="pseudo"]',
-                  ) as HTMLInputElement | null
-                  if (input) input.value = item
-                }}
+                style={{ marginRight: 8, background: 'none', border: 0, color: '#003366', textDecoration: 'underline', cursor: 'pointer' }}
+                onClick={onSkip}
               >
-                {item}
+                Continuer en invite
               </button>
-            ))}
-          </div>
-          <button className="btn-pink" type="submit">
-            Entrer dans le forum :bounce:
-          </button>
-          <div className="smoke-result" style={{ marginTop: '8px' }}>
-            Doctissimo.IA est un site parodique. Aucune donnée n'est envoyée à un serveur.
-          </div>
-        </form>
+              <button className="btn-pink" type="submit">
+                Entrer dans le forum :bounce:
+              </button>
+            </div>
+            <div className="pseudo-modal-disclaimer">Doctissimo.IA est un site parodique. Aucune donnee n'est envoyee a un serveur.</div>
+          </form>
+        </div>
       </div>
     </div>
   )

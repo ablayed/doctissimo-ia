@@ -4,7 +4,6 @@ type RecentItem = {
   thread_id: string
   topic: string
   n_replies: number
-  completed_at: number
 }
 
 type Props = {
@@ -13,8 +12,8 @@ type Props = {
 
 const fallbackTopics = [
   'mal au ventre depui 2 jours c grav ???',
-  'vaccins = poison ???? les médecins nou cach...',
-  'j ai mal o ventre apré tp jé peur d\'etre...',
+  'vaccins = poison ???? les medecins nou cach...',
+  "j ai mal o ventre apre tp jé peur d'etre...",
   'comen prendre du poid svp',
   'ya des vrai diff entre paracetamol et ibupr...',
   'je sui enceinte ?? svp regardé mé tg...',
@@ -22,54 +21,49 @@ const fallbackTopics = [
 
 export default function RecentThreads({ onSelect }: Props) {
   const [items, setItems] = useState<RecentItem[]>([])
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let mounted = true
-
+    let active = true
     async function load() {
       try {
         const response = await fetch('/api/forum/recent')
         const data = await response.json()
-        if (mounted && Array.isArray(data.items)) {
+        if (active && Array.isArray(data.items)) {
           setItems(data.items)
         }
       } catch {
         // ignore
-      } finally {
-        if (mounted) setLoading(false)
       }
     }
-
-    load()
+    void load()
     const timer = window.setInterval(load, 30000)
     return () => {
-      mounted = false
+      active = false
       window.clearInterval(timer)
     }
   }, [])
 
   return (
-    <div className="sidebar-box">
+    <section>
       <h3>Sujets actifs</h3>
-      {loading && <div className="smoke-result">Chargement...</div>}
-      {!loading && items.length === 0 && (
-        <div className="smoke-result">
-          {fallbackTopics.map((topic) => (
-            <div key={topic}>{topic}</div>
-          ))}
-        </div>
-      )}
-      <ul className="sidebar-list">
-        {items.map((item) => (
+      <ul>
+        {(items.length ? items : fallbackTopics.map((topic, index) => ({
+          thread_id: `fake-${index}`,
+          topic,
+          n_replies: 12 + index * 7,
+        }))).map((item) => (
           <li key={item.thread_id}>
-            <button type="button" onClick={() => onSelect(item.thread_id)}>
-              {item.topic.slice(0, 32)}
-              {item.topic.length > 32 ? '...' : ''} <span>({item.n_replies} msg)</span>
+            <button
+              className="sidebar-list-button"
+              type="button"
+              onClick={() => !item.thread_id.startsWith('fake-') && onSelect(item.thread_id)}
+            >
+              <span>{item.topic.length > 32 ? `${item.topic.slice(0, 32)}...` : item.topic}</span>
+              <span>{item.n_replies} msg</span>
             </button>
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }

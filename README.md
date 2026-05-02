@@ -20,3 +20,7 @@ Disclaimer: parody site for DEFENDHACK 2026. Do not use it for medical diagnosis
 - Easter eggs: Konami code, logo click/night mode, `:bounce:`, right-click, devtools console, reward popup, footer gag
 - Cost cap middleware and admin monitoring endpoint
 - Redis persistence with replay URLs
+
+## Visual
+
+![Screenshot](docs/screenshots/forum-with-skin.png)

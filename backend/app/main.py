@@ -13,7 +13,7 @@ from sse_starlette.sse import EventSourceResponse
 from app.graph import graph
 from app.limits import check_thread_quota
 from app.personas import load_all
-from app.state_store import load_thread, save_thread, zadd, zrevrange, zcard
+from app.state_store import load_thread, save_thread, zrevrange, zcard
 
 
 @asynccontextmanager
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 
 
 class StartReq(BaseModel):

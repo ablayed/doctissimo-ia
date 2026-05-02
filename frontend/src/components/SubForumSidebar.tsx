@@ -1,31 +1,32 @@
 const categories = [
-  'Santé',
+  'Sante',
   'Forme & Sport',
-  'Beauté',
+  'Beaute',
   'Nutrition',
   'Psychologie',
-  'Sexualité',
+  'Sexualite',
   'Grossesse',
-  'Bébé',
+  'Bebe',
   'Famille',
-  'Médicaments',
+  'Medicaments',
   'Le Bistrot',
   'Astrologie',
 ]
 
 export default function SubForumSidebar() {
   return (
-    <div className="sidebar-box">
-      <h3>Catégories</h3>
-      <ul className="sidebar-list">
+    <section>
+      <h3>Categories</h3>
+      <ul>
         {categories.map((item, index) => (
           <li key={item}>
-            <button type="button" onClick={() => window.location.assign('/')}>
-              {item} <span>{12 + index * 3} new</span>
-            </button>
+            <a href="/" className="subforum-link" onClick={(event) => event.preventDefault()}>
+              <span>{item}</span>
+              <span className="new-count">{[47, 23, 89, 34, 67, 156, 234, 178, 45, 12, 312, 89][index]} new</span>
+            </a>
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }

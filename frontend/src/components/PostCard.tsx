@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import { placeholderAvatar, renderSmileysAndQuotes } from '../utils/smileys'
 
-import { renderSmileys } from '../utils/smileys'
+const TRUTH_TELLER_ID = 'infirmiereurgences42'
 
 export type ForumPost = {
   id: string
@@ -11,87 +11,81 @@ export type ForumPost = {
   arrived_at: number
 }
 
-const FALLBACK_AVATAR =
-  'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23FFCCE5"/><text x="50" y="55" text-anchor="middle" font-family="Verdana" font-size="10" fill="%23CC0066">Docti</text></svg>'
-
-type Props = {
+export default function PostCard({
+  post,
+  index,
+  votes,
+  vote,
+  revealed,
+}: {
   post: ForumPost
-  vote?: (postId: string, value: 'credible' | 'noise') => void
-  voteValue?: 'credible' | 'noise' | null
-  revealed?: boolean
-  isTruthTeller?: boolean
-}
-
-export default function PostCard({ post, vote, voteValue, revealed, isTruthTeller }: Props) {
-  const seconds = Math.max(0, Math.round(post.arrived_at))
-  const avatar = `/avatars/${post.persona_id}.png`
-  const quoteRegex = /\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/i
-  const match = quoteRegex.exec(post.text)
-  const quote = match ? { author: match[1], body: match[2].trim() } : null
-  const body = match ? post.text.replace(match[0], '').trim() : post.text
-  const bodyNodes: ReactNode[] = body.split(/(https?:\/\/[^\s]+)/g).map((part, index) =>
-    /^https?:\/\//.test(part) ? (
-      <a href={part} key={`${part}-${index}`} target="_blank" rel="noreferrer">
-        {part}
-      </a>
-    ) : (
-      <span key={`${part}-${index}`}>{renderSmileys(part)}</span>
-    ),
-  )
+  index: number
+  votes: Record<string, 'credible' | 'noise' | null>
+  vote: (id: string, value: 'credible' | 'noise' | null) => void
+  revealed: boolean
+}) {
+  const isTruth = post.persona_id.toLowerCase() === TRUTH_TELLER_ID
+  const isReply = !!post.parent_id
+  const isNew = post.arrived_at < 5
+  const seconds = Math.max(1, Math.floor(post.arrived_at))
+  const timeAgo = seconds < 60 ? `il y a ${seconds}s` : `il y a ${Math.floor(seconds / 60)}min`
 
   return (
-    <div
-      className={`post${post.parent_id ? ' post-reply' : ''}${
-        revealed && isTruthTeller ? ' post-truth-revealed' : ''
-      }`}
-    >
-      <div className="post-header">
+    <div className={`post ${isReply ? 'post-reply' : ''} ${revealed && isTruth ? 'post-truth-revealed' : ''}`}>
+      <div className="post-meta">
         <span>
-          {post.pseudo}
-          {isTruthTeller && <span className="truth-badge">Vérifiée par sources médicales</span>}
+          <span className="post-num">#{String(index + 1).padStart(4, '0')}</span> Poste {timeAgo}
+          {isNew && <span className="new-badge">NEW!</span>}
         </span>
-        <span>Posté il y a {seconds}s</span>
+        <span className="post-time">
+          [<a href="#">Citer</a>] [<a href="#">Editer</a>] [<a href="#">Signaler</a>]
+        </span>
       </div>
-      <table className="post-body" cellPadding="0" cellSpacing="0">
-        <tbody>
-          <tr>
-            <td className="post-author">
-              <img
-                className="avatar"
-                src={avatar}
-                alt=""
-                onError={(event) => {
-                  event.currentTarget.src = FALLBACK_AVATAR
-                }}
-              />
-              <b>{post.pseudo}</b>
-              <span>Membre depuis 2003</span>
-            </td>
-            <td className="post-content">
-              {quote && <div className="quote-block">Citation : {quote.body}</div>}
-              <div>{bodyNodes}</div>
-              {vote && (
-                <div className="vote-bar">
-                  <button
-                    className={`vote-btn ${voteValue === 'credible' ? 'active' : ''}`}
-                    onClick={() => vote(post.id, 'credible')}
-                    type="button"
-                  >
-                    Crédible
-                  </button>
-                  <button
-                    className={`vote-btn ${voteValue === 'noise' ? 'active' : ''}`}
-                    onClick={() => vote(post.id, 'noise')}
-                    type="button"
-                  >
-                    N&apos;importe quoi
-                  </button>
-                </div>
-              )}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="post-author">
+        <span className="pseudo">
+          {post.pseudo}
+          {revealed && isTruth && <span className="truth-badge">VERIFIEE</span>}
+        </span>
+        <img
+          className="avatar"
+          src={`/avatars/${post.persona_id}.png`}
+          onError={(event) => {
+            event.currentTarget.src = placeholderAvatar(post.pseudo)
+          }}
+          alt={post.pseudo}
+        />
+        <div className="member-status">● en ligne</div>
+        <div className="member-stats">
+          <span>Inscrit(e) le 12/05/2003</span>
+          <span>{Math.floor(Math.random() * 4000) + 200} messages</span>
+          <span>France</span>
+        </div>
+      </div>
+      <div className="post-content">
+        <div
+          dangerouslySetInnerHTML={{
+            __html: renderSmileysAndQuotes(post.text, revealed && isTruth),
+          }}
+        />
+        <div className="signature">Signature perso : msn, skyblog, bisous les filles...</div>
+        <div className="vote-bar">
+          <button
+            className={`vote-btn ${votes[post.id] === 'credible' ? 'active' : ''}`}
+            onClick={() => vote(post.id, votes[post.id] === 'credible' ? null : 'credible')}
+            type="button"
+          >
+            Credible
+          </button>
+          <button
+            className={`vote-btn ${votes[post.id] === 'noise' ? 'active' : ''}`}
+            onClick={() => vote(post.id, votes[post.id] === 'noise' ? null : 'noise')}
+            type="button"
+          >
+            N'importe quoi
+          </button>
+          {votes[post.id] && <span className="vote-feedback">OK enregistre</span>}
+        </div>
+      </div>
     </div>
   )
 }

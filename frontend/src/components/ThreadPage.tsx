@@ -1,18 +1,27 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 
-import FakeAds from './FakeAds'
+import AdRotator from './AdRotator'
+import ConstructionScroller from './ConstructionScroller'
+import Footer from './Footer'
+import Header from './Header'
+import ModemModal from './ModemModal'
+import NavTabs from './NavTabs'
 import PostCard, { type ForumPost } from './PostCard'
 import PseudoModal from './PseudoModal'
 import RecentThreads from './RecentThreads'
 import RevealModal from './RevealModal'
+import SoundToggle from './SoundToggle'
 import StatsBar from './StatsBar'
 import SubForumSidebar from './SubForumSidebar'
+import TopHotTopics from './TopHotTopics'
+import UnderConstructionStrip from './UnderConstructionStrip'
+import { useSoundPrefs } from '../hooks/useSound'
 import { useUser } from '../hooks/useUser'
+import { useVisitorCounter } from '../hooks/useVisitorCounter'
 import { useVotes } from '../hooks/useVotes'
 
 type StartResponse = {
   thread_id: string
-  n_personas: number
 }
 
 type ReplayThread = {
@@ -23,22 +32,12 @@ type ReplayThread = {
 }
 
 const TRUTH_TELLER_ID = 'infirmiereurgences42'
-const KONAMI = [
-  'ArrowUp',
-  'ArrowUp',
-  'ArrowDown',
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowLeft',
-  'ArrowRight',
-  'KeyB',
-  'KeyA',
-]
+const REVEAL_STORAGE_KEY = 'doctissimo-revealed'
+const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA']
 
 export default function ThreadPage() {
   const [topic, setTopic] = useState('mal au ventre')
-  const [seedPost, setSeedPost] = useState('jé mal o ventre depui 2j c grav ???')
+  const [seedPost, setSeedPost] = useState('je mal o ventre depui 2j c grav ???')
   const [threadId, setThreadId] = useState<string | null>(null)
   const [posts, setPosts] = useState<ForumPost[]>([])
   const [seed, setSeed] = useState('')
@@ -46,17 +45,19 @@ export default function ThreadPage() {
   const [error, setError] = useState('')
   const [showRevealBanner, setShowRevealBanner] = useState(false)
   const [revealOpen, setRevealOpen] = useState(false)
+  const [revealed, setRevealed] = useState(false)
   const [showPseudoModal, setShowPseudoModal] = useState(false)
   const [nightMode, setNightMode] = useState(false)
+  const [modemReady, setModemReady] = useState(false)
   const eventSourceRef = useRef<EventSource | null>(null)
   const konamiBuffer = useRef<string[]>([])
   const logoClicks = useRef(0)
   const user = useUser()
   const votesApi = useVotes(threadId || 'none')
-  const votes = votesApi.votes
+  const sound = useSoundPrefs()
+  const { counter, elapsed } = useVisitorCounter()
 
   useEffect(() => {
-    fetch('/api/warm').catch(() => {})
     const params = new URLSearchParams(window.location.search)
     const threadQuery = params.get('t')
     if (threadQuery) void loadReplay(threadQuery)
@@ -64,47 +65,56 @@ export default function ThreadPage() {
   }, [])
 
   useEffect(() => {
-    if (votesApi.totalVotes >= 10) setShowRevealBanner(true)
-  }, [votesApi.totalVotes])
+    if (!threadId) return
+    const key = `${REVEAL_STORAGE_KEY}:${threadId}`
+    setRevealed(localStorage.getItem(key) === '1')
+    setRevealOpen(false)
+  }, [threadId])
+
+  useEffect(() => {
+    if (threadId && votesApi.totalVotes >= 10) {
+      setShowRevealBanner(true)
+    }
+  }, [threadId, votesApi.totalVotes])
 
   useEffect(() => {
     document.body.classList.toggle('night-mode', nightMode)
   }, [nightMode])
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
+    const keydown = (event: KeyboardEvent) => {
       konamiBuffer.current = [...konamiBuffer.current, event.code].slice(-KONAMI.length)
-      if (KONAMI.every((key, index) => konamiBuffer.current[index] === key)) {
-        alert('PERLES DE DOCTISSIMO 2003 ACTIVÉES')
-        setTopic('Perles de Doctissimo')
-        setSeedPost(
-          "Mon homéopathe m'a dit qu'il faut mettre une gousse d'ail dans le bocal en argent au clair de lune sa marche tro b1 jé eu mes regle 1h après tkt :love:",
+      if (KONAMI.every((value, index) => konamiBuffer.current[index] === value)) {
+        alert('PERLES DE DOCTISSIMO 2003 ACTIVEES')
+        void startThread(
+          'Perles de Doctissimo',
+          "Mon homeopathe m'a dit qu'il faut mettre une gousse d'ail dans le bocal en argent au clair de lune sa marche tro b1 je eu mes regle 1h apres tkt :love:",
         )
       }
     }
-    const onContextMenu = (event: MouseEvent) => {
+    const contextMenu = (event: MouseEvent) => {
       event.preventDefault()
-      alert(
-        "Erreur 0x80004005\n\nImpossible de copier le contenu protégé par Doctissimo.IA.\n\nContactez votre administrateur système.",
-      )
+      alert("Erreur 0x80004005\n\nImpossible de copier le contenu protege par Doctissimo.IA.\n\nContactez votre administrateur systeme.")
     }
-    document.addEventListener('keydown', onKeyDown)
-    document.addEventListener('contextmenu', onContextMenu)
+    document.addEventListener('keydown', keydown)
+    document.addEventListener('contextmenu', contextMenu)
     return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      document.removeEventListener('contextmenu', onContextMenu)
+      document.removeEventListener('keydown', keydown)
+      document.removeEventListener('contextmenu', contextMenu)
     }
   }, [])
 
+  useEffect(() => {
+    if (counter === 8000 || counter === 80000) {
+      alert(`FELICITATIONS !\n\nVous etes le ${counter}eme visiteur !\n\nVous avez gagne un cadeau !\n\nCliquez sur OK pour le reclamer.`)
+      window.location.href = '/cadeau.html'
+    }
+  }, [counter])
+
+  const sortedPosts = useMemo(() => posts.slice().sort((a, b) => a.arrived_at - b.arrived_at), [posts])
+
   function closeStream() {
     eventSourceRef.current?.close()
-  }
-
-  function triggerNightMode() {
-    logoClicks.current += 1
-    if (logoClicks.current >= 3) {
-      setNightMode(true)
-    }
   }
 
   async function loadReplay(selectedThreadId: string) {
@@ -121,6 +131,7 @@ export default function ThreadPage() {
       setSeed(data.seed_post)
       setThreadId(data.thread_id)
       setPosts(data.posts)
+      setShowRevealBanner(votesApi.totalVotes >= 10)
       window.history.replaceState(null, '', `?t=${data.thread_id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
@@ -129,28 +140,32 @@ export default function ThreadPage() {
     }
   }
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  async function startThread(nextTopic: string, nextSeed: string) {
     closeStream()
     setLoading(true)
     setError('')
     setPosts([])
     setThreadId(null)
-    setSeed(seedPost)
+    setSeed(nextSeed)
+    setShowRevealBanner(false)
+    setRevealOpen(false)
+    setRevealed(false)
     try {
       const response = await fetch('/api/forum/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, seed_post: seedPost }),
+        body: JSON.stringify({ topic: nextTopic, seed_post: nextSeed }),
       })
       if (!response.ok) throw new Error(`Erreur ${response.status}`)
       const data = (await response.json()) as StartResponse
       setThreadId(data.thread_id)
+      setTopic(nextTopic)
       const source = new EventSource(`/api/forum/${data.thread_id}/stream`)
       eventSourceRef.current = source
       source.addEventListener('post', (message) => {
         const post = JSON.parse((message as MessageEvent).data) as ForumPost
         setPosts((current) => (current.some((item) => item.id === post.id) ? current : [...current, post]))
+        sound.playDing()
       })
       source.addEventListener('done', () => {
         source.close()
@@ -168,33 +183,59 @@ export default function ThreadPage() {
     }
   }
 
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    await startThread(topic, seedPost)
+  }
+
   function handleSeedChange(value: string) {
     setSeedPost(value)
     if (value === ':bounce:') {
       const img = document.createElement('img')
-      img.src = '/smileys/bounce.gif'
+      img.src =
+        'data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24"%3E%3Crect width="24" height="24" fill="%23FFFF99"/%3E%3Ctext x="12" y="15" text-anchor="middle" font-family="Verdana" font-size="10" fill="%23CC0066"%3E:B%3C/text%3E%3C/svg%3E'
       img.alt = ':bounce:'
       img.style.position = 'fixed'
-      img.style.top = '40%'
+      img.style.top = '45%'
       img.style.left = '-100px'
       img.style.zIndex = '9999'
       img.style.transition = 'transform 3s linear'
       document.body.appendChild(img)
-      window.setTimeout(() => {
+      requestAnimationFrame(() => {
         img.style.transform = 'translateX(calc(100vw + 160px))'
-      }, 20)
+      })
       window.setTimeout(() => img.remove(), 3200)
-      window.setTimeout(() => alert("Easter egg trouvé ! +1 point d'originalité"), 50)
+      window.setTimeout(() => alert("Easter egg trouve ! +1 point d'originalite"), 50)
       setSeedPost('')
     }
   }
 
-  const sortedPosts = useMemo(() => posts.slice().sort((a, b) => a.arrived_at - b.arrived_at), [posts])
+  function handleLogoClick() {
+    logoClicks.current += 1
+    if (logoClicks.current >= 3) {
+      setNightMode(true)
+    }
+  }
+
+  function handleLogout() {
+    user.logout()
+    setShowPseudoModal(true)
+  }
+
+  function openReveal() {
+    setRevealOpen(true)
+    setRevealed(true)
+    if (threadId) localStorage.setItem(`${REVEAL_STORAGE_KEY}:${threadId}`, '1')
+  }
 
   return (
-    <div className={`doctissimo-page${nightMode ? ' night-mode' : ''}`}>
+    <>
+      {!modemReady && <ModemModal onComplete={() => setModemReady(true)} onPlayModem={sound.playModem} />}
+      <SoundToggle muted={sound.muted} onToggle={() => sound.setMuted(!sound.muted)} />
+      <ConstructionScroller />
       <PseudoModal
         open={showPseudoModal}
+        onSkip={() => setShowPseudoModal(false)}
         onSubmit={(pseudo) => {
           user.register(pseudo)
           setShowPseudoModal(false)
@@ -203,94 +244,105 @@ export default function ThreadPage() {
       <RevealModal
         open={revealOpen}
         onClose={() => setRevealOpen(false)}
-        votes={votes}
+        votes={votesApi.votes}
         posts={sortedPosts}
         truthTellerId={TRUTH_TELLER_ID}
       />
-      {user.pseudo && (
-        <div className="connected-banner">
-          Connecté(e) en tant que <strong>{user.pseudo}</strong>
-          <button className="logout-link" type="button" onClick={user.logout}>
-            Se déconnecter
-          </button>
+      <div className="doctissimo-page">
+        {user.pseudo && (
+          <div className="connected-banner">
+            <div>
+              Connecte(e) en tant que <strong>{user.pseudo}</strong>
+              <span className="status">● en ligne</span>
+            </div>
+            <button className="logout-link" onClick={handleLogout} type="button">
+              Se deconnecter
+            </button>
+          </div>
+        )}
+        <Header onLogoClick={handleLogoClick} />
+        <NavTabs />
+        <StatsBar counter={counter} elapsed={elapsed} />
+        <div className="main-layout">
+          <main className="thread-main">
+            {!threadId && (
+              <form className="thread-form" onSubmit={submit}>
+                <label>
+                  Sujet
+                  <input value={topic} onChange={(event) => setTopic(event.target.value)} type="text" />
+                </label>
+                <label>
+                  Message
+                  <textarea value={seedPost} onChange={(event) => handleSeedChange(event.target.value)} rows={6} />
+                </label>
+                <button className="btn-pink" type="submit" disabled={loading}>
+                  Poster :bounce:
+                </button>
+              </form>
+            )}
+            {threadId && (
+              <>
+                {showRevealBanner && (
+                  <div className="thread-title-bar" style={{ marginBottom: 8 }}>
+                    <h2>Vous avez vote sur {votesApi.totalVotes} messages.</h2>
+                    <div className="thread-actions">
+                      <button className="btn-pink" onClick={openReveal} type="button">
+                        Voir la verite
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <div className="thread-title-bar">
+                  <h2>{topic}</h2>
+                  <div className="thread-actions">
+                    <button className="btn-pink" type="button">
+                      Repondre
+                    </button>
+                    <button className="btn-pink" type="button">
+                      Surveiller ce sujet
+                    </button>
+                    <button className="btn-pink" type="button">
+                      Imprimer
+                    </button>
+                  </div>
+                </div>
+                <div className="post seed-post">
+                  <div className="post-meta">
+                    <span>
+                      <span className="post-num">#0000</span> Poste maintenant
+                    </span>
+                    <span className="post-time">[Question initiale]</span>
+                  </div>
+                  <div className="seed-content">{seed}</div>
+                </div>
+                {sortedPosts.map((post, index) => (
+                  <div key={post.id}>
+                    <PostCard post={post} index={index} votes={votesApi.votes} vote={votesApi.vote} revealed={revealed} />
+                    {(index + 1) % 7 === 0 && <UnderConstructionStrip />}
+                  </div>
+                ))}
+              </>
+            )}
+            {error && <div className="thread-form">{error}</div>}
+          </main>
+          <aside className="sidebar">
+            <RecentThreads onSelect={loadReplay} />
+            <SubForumSidebar />
+            <TopHotTopics />
+            <section>
+              <h3>Publicite</h3>
+              <div className="banner-ad-skyscraper">
+                <AdRotator slot="skyscraper" />
+              </div>
+            </section>
+            <section>
+              <h3>Travaux</h3>
+              <UnderConstructionStrip />
+            </section>
+          </aside>
         </div>
-      )}
-      <div className="header">
-        <span className="logo" title="Doctissimo.IA v2.3.7 — propulsé par phpBB (avec un peu d'IA cachée :whistle:)" onClick={triggerNightMode}>
-          Doctissimo.IA
-        </span>
+        <Footer counter={counter.toLocaleString('fr-FR', { minimumIntegerDigits: 7, useGrouping: false })} />
       </div>
-      <StatsBar />
-      <div className="main-layout">
-        <main className="thread-main">
-          {!threadId && (
-            <form className="thread-form" onSubmit={submit}>
-              <label>
-                Sujet
-                <input value={topic} onChange={(event) => setTopic(event.target.value)} />
-              </label>
-              <label>
-                Message
-                <textarea value={seedPost} onChange={(event) => handleSeedChange(event.target.value)} rows={6} />
-              </label>
-              <button className="btn-pink" type="submit" disabled={loading}>
-                Poster :bounce:
-              </button>
-            </form>
-          )}
-
-          {threadId && (
-            <>
-              {showRevealBanner && (
-                <div className="reveal-banner">
-                  <span>Vous avez voté sur {votesApi.totalVotes} messages.</span>
-                  <button className="btn-pink" type="button" onClick={() => setRevealOpen(true)}>
-                    Voulez-vous voir la vérité ?
-                  </button>
-                </div>
-              )}
-              <div className="thread-title">Sujet : {topic}</div>
-              <div className="post seed-post">
-                <div className="post-header">
-                  <span>Vous</span>
-                  <span>Posté maintenant</span>
-                </div>
-                <div className="seed-content">{seed}</div>
-              </div>
-              <div className="thread-status">
-                Thread #{threadId} · {posts.length} réponse(s)
-                {loading ? ' · connexion en cours...' : ''}
-              </div>
-              {sortedPosts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  vote={votesApi.vote}
-                  voteValue={votes[post.id] || null}
-                  revealed={revealOpen}
-                  isTruthTeller={post.persona_id.toLowerCase() === TRUTH_TELLER_ID}
-                />
-              ))}
-            </>
-          )}
-
-          <RecentThreads onSelect={loadReplay} />
-          {error && <div className="smoke-result smoke-result-error">{error}</div>}
-        </main>
-        <aside className="sidebar-column">
-          <SubForumSidebar />
-          <FakeAds variant="skyscraper" />
-        </aside>
-      </div>
-      <footer>
-        Site optimisé pour Internet Explorer 5.5+ en 800×600 · © Doctissimo.IA 2026 - Site
-        parodique - Tous droits non réservés · Hébergé chez{' '}
-        <a href="https://fr.wikipedia.org/wiki/Multimania" target="_blank" rel="noreferrer">
-          Multimania.com
-        </a>{' '}
-        · Webmaster : ablaye@hotmail.fr · Cette page a été créée avec Frontpage 2003 et beaucoup
-        d'amour
-      </footer>
-    </div>
+    </>
   )
 }
