@@ -9,7 +9,13 @@ export default function FakeAds({ variant }: { variant: 'top' | 'skyscraper' }) 
     return () => window.clearInterval(timer)
   }, [])
   return (
-    <button className={`fake-ad fake-ad-${variant}`} type="button" onClick={() => alert('Erreur 0x80004005 : Une autre fenÃªtre s\'est ouverte.')}>
+    <button
+      className={`fake-ad fake-ad-${variant}`}
+      type="button"
+      onClick={() =>
+        alert("Erreur 0x80004005 : Une autre fenêtre s'est ouverte.\n\nVeuillez désactiver votre bloqueur de pop-ups.")
+      }
+    >
       <img src={banners[index]} alt="" />
     </button>
   )

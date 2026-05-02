@@ -19,6 +19,16 @@ body {
   font-size: 11px;
 }
 
+body.night-mode,
+.night-mode {
+  background: #990033;
+  color: #ffffff;
+}
+
+.night-mode .doctissimo-page {
+  box-shadow: 4px 4px 0 #660022;
+}
+
 a {
   color: #0000ff;
   text-decoration: underline;
@@ -66,6 +76,10 @@ a:visited {
   font-size: 18px;
   font-weight: bold;
   text-shadow: 1px 1px 0 #99004d;
+}
+
+.logo {
+  cursor: pointer;
 }
 
 .layout-table {
@@ -287,6 +301,11 @@ a:visited {
   cursor: pointer;
   font-family: Verdana, Geneva, sans-serif;
   font-size: 11px;
+}
+
+.sidebar-list button span {
+  float: right;
+  color: #cc0066;
 }
 
 .sidebar {

@@ -23,6 +23,18 @@ type ReplayThread = {
 }
 
 const TRUTH_TELLER_ID = 'infirmiereurgences42'
+const KONAMI = [
+  'ArrowUp',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowLeft',
+  'ArrowRight',
+  'KeyB',
+  'KeyA',
+]
 
 export default function ThreadPage() {
   const [topic, setTopic] = useState('mal au ventre')
@@ -35,7 +47,10 @@ export default function ThreadPage() {
   const [showRevealBanner, setShowRevealBanner] = useState(false)
   const [revealOpen, setRevealOpen] = useState(false)
   const [showPseudoModal, setShowPseudoModal] = useState(false)
+  const [nightMode, setNightMode] = useState(false)
   const eventSourceRef = useRef<EventSource | null>(null)
+  const konamiBuffer = useRef<string[]>([])
+  const logoClicks = useRef(0)
   const user = useUser()
   const votesApi = useVotes(threadId || 'none')
   const votes = votesApi.votes
@@ -52,8 +67,44 @@ export default function ThreadPage() {
     if (votesApi.totalVotes >= 10) setShowRevealBanner(true)
   }, [votesApi.totalVotes])
 
+  useEffect(() => {
+    document.body.classList.toggle('night-mode', nightMode)
+  }, [nightMode])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      konamiBuffer.current = [...konamiBuffer.current, event.code].slice(-KONAMI.length)
+      if (KONAMI.every((key, index) => konamiBuffer.current[index] === key)) {
+        alert('PERLES DE DOCTISSIMO 2003 ACTIVÉES')
+        setTopic('Perles de Doctissimo')
+        setSeedPost(
+          "Mon homéopathe m'a dit qu'il faut mettre une gousse d'ail dans le bocal en argent au clair de lune sa marche tro b1 jé eu mes regle 1h après tkt :love:",
+        )
+      }
+    }
+    const onContextMenu = (event: MouseEvent) => {
+      event.preventDefault()
+      alert(
+        "Erreur 0x80004005\n\nImpossible de copier le contenu protégé par Doctissimo.IA.\n\nContactez votre administrateur système.",
+      )
+    }
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('contextmenu', onContextMenu)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('contextmenu', onContextMenu)
+    }
+  }, [])
+
   function closeStream() {
     eventSourceRef.current?.close()
+  }
+
+  function triggerNightMode() {
+    logoClicks.current += 1
+    if (logoClicks.current >= 3) {
+      setNightMode(true)
+    }
   }
 
   async function loadReplay(selectedThreadId: string) {
@@ -117,10 +168,31 @@ export default function ThreadPage() {
     }
   }
 
+  function handleSeedChange(value: string) {
+    setSeedPost(value)
+    if (value === ':bounce:') {
+      const img = document.createElement('img')
+      img.src = '/smileys/bounce.gif'
+      img.alt = ':bounce:'
+      img.style.position = 'fixed'
+      img.style.top = '40%'
+      img.style.left = '-100px'
+      img.style.zIndex = '9999'
+      img.style.transition = 'transform 3s linear'
+      document.body.appendChild(img)
+      window.setTimeout(() => {
+        img.style.transform = 'translateX(calc(100vw + 160px))'
+      }, 20)
+      window.setTimeout(() => img.remove(), 3200)
+      window.setTimeout(() => alert("Easter egg trouvé ! +1 point d'originalité"), 50)
+      setSeedPost('')
+    }
+  }
+
   const sortedPosts = useMemo(() => posts.slice().sort((a, b) => a.arrived_at - b.arrived_at), [posts])
 
   return (
-    <div className="doctissimo-page">
+    <div className={`doctissimo-page${nightMode ? ' night-mode' : ''}`}>
       <PseudoModal
         open={showPseudoModal}
         onSubmit={(pseudo) => {
@@ -143,7 +215,11 @@ export default function ThreadPage() {
           </button>
         </div>
       )}
-      <div className="header">Doctissimo.IA</div>
+      <div className="header">
+        <span className="logo" title="Doctissimo.IA v2.3.7 — propulsé par phpBB (avec un peu d'IA cachée :whistle:)" onClick={triggerNightMode}>
+          Doctissimo.IA
+        </span>
+      </div>
       <StatsBar />
       <div className="main-layout">
         <main className="thread-main">
@@ -155,11 +231,7 @@ export default function ThreadPage() {
               </label>
               <label>
                 Message
-                <textarea
-                  value={seedPost}
-                  onChange={(event) => setSeedPost(event.target.value)}
-                  rows={6}
-                />
+                <textarea value={seedPost} onChange={(event) => handleSeedChange(event.target.value)} rows={6} />
               </label>
               <button className="btn-pink" type="submit" disabled={loading}>
                 Poster :bounce:
@@ -171,7 +243,7 @@ export default function ThreadPage() {
             <>
               {showRevealBanner && (
                 <div className="reveal-banner">
-                  Vous avez voté sur {votesApi.totalVotes} messages.
+                  <span>Vous avez voté sur {votesApi.totalVotes} messages.</span>
                   <button className="btn-pink" type="button" onClick={() => setRevealOpen(true)}>
                     Voulez-vous voir la vérité ?
                   </button>
@@ -210,7 +282,15 @@ export default function ThreadPage() {
           <FakeAds variant="skyscraper" />
         </aside>
       </div>
-      <footer>© Doctissimo.IA 2026 — site parodique pour DEFENDHACK</footer>
+      <footer>
+        Site optimisé pour Internet Explorer 5.5+ en 800×600 · © Doctissimo.IA 2026 - Site
+        parodique - Tous droits non réservés · Hébergé chez{' '}
+        <a href="https://fr.wikipedia.org/wiki/Multimania" target="_blank" rel="noreferrer">
+          Multimania.com
+        </a>{' '}
+        · Webmaster : ablaye@hotmail.fr · Cette page a été créée avec Frontpage 2003 et beaucoup
+        d'amour
+      </footer>
     </div>
   )
 }

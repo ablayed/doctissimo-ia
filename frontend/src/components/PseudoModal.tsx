@@ -22,7 +22,7 @@ const suggestions = [
 
 export default function PseudoModal({ open, onSubmit }: Props) {
   if (!open) return null
-  const chips = suggestions.slice(0, 6)
+  const chips = [...suggestions].sort(() => Math.random() - 0.5).slice(0, 6)
   return (
     <div className="modal-backdrop">
       <div className="modal-content">
@@ -57,6 +57,9 @@ export default function PseudoModal({ open, onSubmit }: Props) {
           <button className="btn-pink" type="submit">
             Entrer dans le forum :bounce:
           </button>
+          <div className="smoke-result" style={{ marginTop: '8px' }}>
+            Doctissimo.IA est un site parodique. Aucune donnée n'est envoyée à un serveur.
+          </div>
         </form>
       </div>
     </div>

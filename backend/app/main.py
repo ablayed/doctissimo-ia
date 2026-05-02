@@ -262,3 +262,8 @@ async def admin_stats(key: str = "") -> dict[str, object]:
         "threads_total": await zcard("recent_threads"),
         "estimated_cost_eur": round(tokens_today * 0.00015 / 1000 * 0.93, 2),
     }
+
+
+@app.get("/api/forum/easter-egg")
+async def easter_egg() -> dict[str, str]:
+    return {"hint": "Try the Konami code on the homepage. ↑↑↓↓←→←→BA"}

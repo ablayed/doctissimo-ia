@@ -1,4 +1,17 @@
-const categories = ['Santé', 'Forme & Sport', 'Beauté', 'Nutrition', 'Psychologie', 'Sexualité', 'Grossesse', 'Bébé', 'Famille', 'Médicaments', 'Le Bistrot', 'Astrologie']
+const categories = [
+  'Santé',
+  'Forme & Sport',
+  'Beauté',
+  'Nutrition',
+  'Psychologie',
+  'Sexualité',
+  'Grossesse',
+  'Bébé',
+  'Famille',
+  'Médicaments',
+  'Le Bistrot',
+  'Astrologie',
+]
 
 export default function SubForumSidebar() {
   return (

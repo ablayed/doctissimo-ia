@@ -48,7 +48,7 @@ export default function PostCard({ post, vote, voteValue, revealed, isTruthTelle
       <div className="post-header">
         <span>
           {post.pseudo}
-          {isTruthTeller && <span className="truth-badge">Vérifiée</span>}
+          {isTruthTeller && <span className="truth-badge">Vérifiée par sources médicales</span>}
         </span>
         <span>Posté il y a {seconds}s</span>
       </div>
@@ -68,11 +68,7 @@ export default function PostCard({ post, vote, voteValue, revealed, isTruthTelle
               <span>Membre depuis 2003</span>
             </td>
             <td className="post-content">
-              {quote && (
-                <div className="quote-block">
-                  Citation : {quote.body}
-                </div>
-              )}
+              {quote && <div className="quote-block">Citation : {quote.body}</div>}
               <div>{bodyNodes}</div>
               {vote && (
                 <div className="vote-bar">

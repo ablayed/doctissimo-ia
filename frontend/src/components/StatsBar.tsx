@@ -6,7 +6,16 @@ export default function StatsBar() {
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      setCounter((value) => value + 1 + Math.floor(Math.random() * 3))
+      setCounter((value) => {
+        const next = value + 1 + Math.floor(Math.random() * 3)
+        if (next === 8000 || next === 80000) {
+          alert(
+            `FÉLICITATIONS !\n\nVous êtes le ${next}ème visiteur !\n\nVous avez gagné un cadeau !\n\nCliquez sur OK pour le réclamer.`,
+          )
+          window.location.href = '/cadeau.html'
+        }
+        return next
+      })
       setElapsed((value) => value + 4)
     }, 4000)
     return () => window.clearInterval(timer)

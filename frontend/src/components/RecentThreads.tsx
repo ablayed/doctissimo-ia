@@ -11,6 +11,15 @@ type Props = {
   onSelect: (threadId: string) => void
 }
 
+const fallbackTopics = [
+  'mal au ventre depui 2 jours c grav ???',
+  'vaccins = poison ???? les médecins nou cach...',
+  'j ai mal o ventre apré tp jé peur d\'etre...',
+  'comen prendre du poid svp',
+  'ya des vrai diff entre paracetamol et ibupr...',
+  'je sui enceinte ?? svp regardé mé tg...',
+]
+
 export default function RecentThreads({ onSelect }: Props) {
   const [items, setItems] = useState<RecentItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,17 +50,22 @@ export default function RecentThreads({ onSelect }: Props) {
   }, [])
 
   return (
-    <div className="sidebar">
-      <div className="thread-status">Sujets récents</div>
+    <div className="sidebar-box">
+      <h3>Sujets actifs</h3>
       {loading && <div className="smoke-result">Chargement...</div>}
       {!loading && items.length === 0 && (
-        <div className="smoke-result">Aucun thread récent disponible.</div>
+        <div className="smoke-result">
+          {fallbackTopics.map((topic) => (
+            <div key={topic}>{topic}</div>
+          ))}
+        </div>
       )}
-      <ul>
+      <ul className="sidebar-list">
         {items.map((item) => (
           <li key={item.thread_id}>
             <button type="button" onClick={() => onSelect(item.thread_id)}>
-              {item.topic} <span>({item.n_replies} msg)</span>
+              {item.topic.slice(0, 32)}
+              {item.topic.length > 32 ? '...' : ''} <span>({item.n_replies} msg)</span>
             </button>
           </li>
         ))}
