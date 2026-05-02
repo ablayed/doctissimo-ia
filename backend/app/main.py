@@ -2,6 +2,7 @@ import os
 import json
 import uuid
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,7 +20,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
 class StartReq(BaseModel):
@@ -70,6 +71,82 @@ async def smoke() -> dict[str, str]:
         return {"status": "ok", "azure_says": text.strip()}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
+
+
+async def _azure_ok() -> bool:
+    if not (
+        os.environ.get("AZURE_OPENAI_ENDPOINT")
+        and os.environ.get("AZURE_OPENAI_API_KEY")
+    ):
+        return False
+    try:
+        from app.azure import call_llm
+
+        text = await call_llm(
+            "mini",
+            [{"role": "user", "content": "Réponds uniquement OK."}],
+            max_tokens=5,
+            temperature=0.0,
+        )
+        return bool(text.strip())
+    except Exception:
+        return False
+
+
+async def _redis_ok() -> bool:
+    if not (
+        os.environ.get("UPSTASH_REDIS_REST_URL")
+        and os.environ.get("UPSTASH_REDIS_REST_TOKEN")
+    ):
+        return False
+    try:
+        key = f"info-{uuid.uuid4()}"
+        await save_thread(key, {"ok": True}, ttl=60)
+        data = await load_thread(key)
+        return data == {"ok": True}
+    except Exception:
+        return False
+
+
+def _extract_vector_count(info: Any) -> int:
+    if isinstance(info, dict):
+        for key in ("vector_count", "vectorCount", "total_vectors", "totalVectors"):
+            if key in info:
+                return int(info[key])
+    for key in ("vector_count", "vectorCount", "total_vectors", "totalVectors"):
+        value = getattr(info, key, None)
+        if value is not None:
+            return int(value)
+    return 0
+
+
+async def _rag_indexed() -> bool:
+    if not (
+        os.environ.get("UPSTASH_VECTOR_REST_URL")
+        and os.environ.get("UPSTASH_VECTOR_REST_TOKEN")
+    ):
+        return False
+    try:
+        from upstash_vector import Index
+
+        index = Index(
+            url=os.environ["UPSTASH_VECTOR_REST_URL"],
+            token=os.environ["UPSTASH_VECTOR_REST_TOKEN"],
+        )
+        return _extract_vector_count(index.info()) > 0
+    except Exception:
+        return False
+
+
+@app.get("/api/info")
+async def info() -> dict[str, bool | int | str]:
+    return {
+        "version": VERSION,
+        "personas_loaded": len(load_all()),
+        "rag_indexed": await _rag_indexed(),
+        "azure_ok": await _azure_ok(),
+        "redis_ok": await _redis_ok(),
+    }
 
 
 @app.post("/api/forum/start")
