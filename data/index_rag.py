@@ -35,7 +35,7 @@ def _read_doc(path: Path) -> tuple[dict, str]:
 
 
 def main() -> None:
-    model = BGEM3FlagModel("BAAI/bge-m3", use_fp16=True)
+    model = BGEM3FlagModel("BAAI/bge-m3", use_fp16=True, normalize_embeddings=True)
     index = Index(
         url=os.environ["UPSTASH_VECTOR_REST_URL"],
         token=os.environ["UPSTASH_VECTOR_REST_TOKEN"],
@@ -47,9 +47,7 @@ def main() -> None:
         metadata, text = _read_doc(path)
         for chunk_idx, chunk in enumerate(_chunks(text)):
             vector_id = f"{metadata['source']}_{metadata['topic']}_{chunk_idx}"
-            embedding = model.encode([chunk], return_dense=True, normalize_embeddings=True)[
-                "dense_vecs"
-            ][0]
+            embedding = model.encode([chunk], return_dense=True)["dense_vecs"][0]
             vectors.append(
                 {
                     "id": vector_id,
