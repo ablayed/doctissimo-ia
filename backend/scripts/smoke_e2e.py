@@ -9,7 +9,7 @@ from pathlib import Path
 import httpx
 
 
-PROD_URL = os.environ.get("SMOKE_E2E_URL", "https://doctissimo-ia.vercel.app")
+PROD_URL = os.environ.get("SMOKE_E2E_URL", "https://ablaye-doctissimo-ia-api.hf.space")
 
 
 async def main():

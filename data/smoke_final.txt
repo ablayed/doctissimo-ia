@@ -1,0 +1,15 @@
+Smoke E2E status: BLOCKED
+
+Local verification:
+- backend pytest -q: PASS
+- backend ruff check .: PASS
+- frontend tsc --noEmit: PASS
+- frontend npm run build: PASS
+
+Live smoke blocker:
+- https://doctissimo-ia.vercel.app returned 404
+- https://ablaye-doctissimo-ia-api.hf.space/api/forum/start returned 404
+
+Next action outside code freeze:
+- confirm the real deployed API origin
+- rerun: python -m scripts.smoke_e2e
