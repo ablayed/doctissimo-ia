@@ -48,7 +48,7 @@ export default function PostCard({
         </span>
         <img
           className="avatar"
-          src={`/avatars/${post.persona_id}.png`}
+          src={`https://api.dicebear.com/7.x/pixel-art/png?seed=${post.persona_id}&size=100`}
           onError={(event) => {
             event.currentTarget.src = placeholderAvatar(post.pseudo)
           }}
