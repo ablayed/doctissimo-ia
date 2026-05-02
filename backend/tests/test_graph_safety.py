@@ -34,7 +34,7 @@ async def test_emergency_routes_to_single_refusal(monkeypatch, all_personas) -> 
     )
 
     assert len(result["posts"]) == 1
-    assert result["posts"][0]["pseudo"] == " Modération Doctissimo.IA"
+    assert result["posts"][0]["pseudo"] == " Moderation Doctissimo.IA"
     assert "3114" in result["posts"][0]["text"]
 
 
@@ -43,8 +43,8 @@ async def test_normal_flow_uses_all_personas(monkeypatch, all_personas) -> None:
     async def fake_rag(seed_post: str, k: int = 5) -> str:
         return "[Source: https://www.ameli.fr/test] contexte"
 
-    async def fake_llm(model, messages, max_tokens, temperature=0.7) -> str:
-        return "réponse"
+    async def fake_llm(*args, **kwargs) -> str:
+        return "reponse"
 
     monkeypatch.setattr(graph_module, "_query_rag", fake_rag)
     monkeypatch.setattr(graph_module, "_call_llm", fake_llm)
@@ -54,7 +54,7 @@ async def test_normal_flow_uses_all_personas(monkeypatch, all_personas) -> None:
         {
             "thread_id": "test",
             "topic": "Mal au ventre",
-            "seed_post": "jé mal au ventre depuis 2j",
+            "seed_post": "je mal au ventre depuis 2j",
             "personas": all_personas,
             "posts": [],
             "rag_context": "",

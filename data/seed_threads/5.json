@@ -1,0 +1,329 @@
+{
+  "thread_id": "demo-5",
+  "topic": "ya une vraie diff entre paracetamol et ibuprofene ?",
+  "seed_post": "ya une vraie diff entre paracetamol et ibuprofene ?",
+  "posts": [
+    {
+      "id": "9b8dbd0b-86f2-4a9d-a16e-c7a15f9bb313",
+      "persona_id": "ado_en_detresse2005",
+      "pseudo": "AdoEnDétresse2005",
+      "parent_id": null,
+      "text": "AdoEnDétresse2005 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 1.0
+    },
+    {
+      "id": "d664fd8d-9205-429f-a058-8485bc7469b9",
+      "persona_id": "bell_et_rebelle75",
+      "pseudo": "BellEtRebelle75",
+      "parent_id": null,
+      "text": "BellEtRebelle75 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 2.0
+    },
+    {
+      "id": "d27bf4c5-653e-4c8a-8e06-d7c1cc8815a4",
+      "persona_id": "capitaine_doctissimo",
+      "pseudo": "CapitaineDoctissimo",
+      "parent_id": null,
+      "text": "CapitaineDoctissimo repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 3.0
+    },
+    {
+      "id": "97e4a60b-75f9-4682-983e-0682cf886adc",
+      "persona_id": "caroline_du_quercy",
+      "pseudo": "CarolineDuQuercy",
+      "parent_id": null,
+      "text": "CarolineDuQuercy repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 4.0
+    },
+    {
+      "id": "3ab91406-69ff-43a3-bf9a-48f2ff68d828",
+      "persona_id": "cessou_l_unique",
+      "pseudo": "Cessou_l_unique",
+      "parent_id": null,
+      "text": "Cessou_l_unique repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 5.0
+    },
+    {
+      "id": "888b50f6-07c1-4efa-80ed-3e7340e38536",
+      "persona_id": "claire_bienveillante",
+      "pseudo": "ClaireBienveillante",
+      "parent_id": null,
+      "text": "ClaireBienveillante repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 6.0
+    },
+    {
+      "id": "a5873329-5cb8-4f98-8d59-4ba7a35dcbf7",
+      "persona_id": "coach_vitamines",
+      "pseudo": "CoachVitamines",
+      "parent_id": null,
+      "text": "CoachVitamines repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 7.0
+    },
+    {
+      "id": "1d189ec3-4ff6-4b8f-a584-f26d902a7689",
+      "persona_id": "dr_internet75",
+      "pseudo": "DrInternet75",
+      "parent_id": null,
+      "text": "DrInternet75 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 8.0
+    },
+    {
+      "id": "9e8d5b1d-d1a9-4f5b-ab6f-112c75e7b11d",
+      "persona_id": "en_attente_de_bb2",
+      "pseudo": "EnAttenteDeBB2",
+      "parent_id": null,
+      "text": "EnAttenteDeBB2 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 9.0
+    },
+    {
+      "id": "171d8670-a7b6-46ad-8397-af0d7a998e88",
+      "persona_id": "florence_bien_etre",
+      "pseudo": "FlorenceBien-Être",
+      "parent_id": null,
+      "text": "FlorenceBien-Être repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 10.0
+    },
+    {
+      "id": "d0410a5a-140c-4aea-8174-2988a64bdd32",
+      "persona_id": "infirmiere_urgences42",
+      "pseudo": "InfirmièreUrgences42",
+      "parent_id": null,
+      "text": "InfirmièreUrgences42 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 11.0
+    },
+    {
+      "id": "28545287-56a6-4b29-95a1-7b3e102fee9a",
+      "persona_id": "jolie_brune29",
+      "pseudo": "JolieBrune29",
+      "parent_id": null,
+      "text": "JolieBrune29 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 12.0
+    },
+    {
+      "id": "32be0c8c-7751-45de-8c91-ca5c609ebc61",
+      "persona_id": "justine_regime_dukan",
+      "pseudo": "JustineRégimeDukan",
+      "parent_id": null,
+      "text": "JustineRégimeDukan repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 13.0
+    },
+    {
+      "id": "f96a2c02-8f99-458c-896c-bcc5f8d18b21",
+      "persona_id": "karine_pma_j547",
+      "pseudo": "Karine_PMA_J547",
+      "parent_id": null,
+      "text": "Karine_PMA_J547 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 14.0
+    },
+    {
+      "id": "d1d436bf-23f1-4464-b78e-40f2f7e7d625",
+      "persona_id": "karinette_du_57",
+      "pseudo": "Karinette_du_57",
+      "parent_id": null,
+      "text": "Karinette_du_57 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 15.0
+    },
+    {
+      "id": "ef0a07e3-a019-45da-be28-14d7bddb1d4c",
+      "persona_id": "lulu2974_reunion",
+      "pseudo": "Lulu2974 Réunion",
+      "parent_id": null,
+      "text": "Lulu2974 Réunion repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 16.0
+    },
+    {
+      "id": "e404a6a3-2cdd-4b6f-8b14-c4b6b8bdd54f",
+      "persona_id": "ma_puce_pour_mai05",
+      "pseudo": "MaPucePour_Mai05",
+      "parent_id": null,
+      "text": "MaPucePour_Mai05 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 17.0
+    },
+    {
+      "id": "16a4f068-4cd5-4eb4-8056-07aa7df28b46",
+      "persona_id": "maman_comblee04",
+      "pseudo": "MamanComblée04",
+      "parent_id": null,
+      "text": "MamanComblée04 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 18.0
+    },
+    {
+      "id": "007f30ff-149f-4856-abec-24fcb678329a",
+      "persona_id": "maman_de3_loulous",
+      "pseudo": "MamanDe3Loulous",
+      "parent_id": null,
+      "text": "MamanDe3Loulous repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 19.0
+    },
+    {
+      "id": "4614f002-0871-4d58-862b-dbc4d8431c46",
+      "persona_id": "michel_du_lot46",
+      "pseudo": "MichelDuLot46",
+      "parent_id": null,
+      "text": "MichelDuLot46 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 20.0
+    },
+    {
+      "id": "3a89e56a-e8b0-464c-ad78-b971e8cb8f5f",
+      "persona_id": "nathalie_zen_attitude",
+      "pseudo": "NathalieZenAttitude",
+      "parent_id": null,
+      "text": "NathalieZenAttitude repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 21.0
+    },
+    {
+      "id": "0a588e89-8659-404f-8a26-e1d70b62ab2f",
+      "persona_id": "paul_nutrition_facts",
+      "pseudo": "PaulNutritionFacts",
+      "parent_id": null,
+      "text": "PaulNutritionFacts repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 22.0
+    },
+    {
+      "id": "80587b8f-eb0a-4312-abf5-72efbe48da44",
+      "persona_id": "pharmacienne_de_quartier",
+      "pseudo": "PharmacienneDeQuartier",
+      "parent_id": null,
+      "text": "PharmacienneDeQuartier repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 23.0
+    },
+    {
+      "id": "f1747863-614f-485a-893d-5656dabb76ed",
+      "persona_id": "princesse_du_93",
+      "pseudo": "Princesse_du_93",
+      "parent_id": null,
+      "text": "Princesse_du_93 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 24.0
+    },
+    {
+      "id": "8470dde4-0a1e-4c91-9415-20e7b9f52272",
+      "persona_id": "psy_en_formation",
+      "pseudo": "PsyEnFormation",
+      "parent_id": null,
+      "text": "PsyEnFormation repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 25.0
+    },
+    {
+      "id": "6634bfad-a850-4e62-a98a-646b0ab37622",
+      "persona_id": "sandra67",
+      "pseudo": "Sandra67",
+      "parent_id": null,
+      "text": "Sandra67 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 26.0
+    },
+    {
+      "id": "5e46f7d9-e7f0-4155-89a0-b003aafdfa81",
+      "persona_id": "true_researcher88",
+      "pseudo": "TrueResearcher88",
+      "parent_id": null,
+      "text": "TrueResearcher88 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 27.0
+    },
+    {
+      "id": "a5eea66d-56ae-466f-9ee5-6ff1a534c5ef",
+      "persona_id": "vegetarian_for_life",
+      "pseudo": "VegetarianForLife",
+      "parent_id": null,
+      "text": "VegetarianForLife repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 28.0
+    },
+    {
+      "id": "f9021d3a-cc7c-4417-a359-f311eb7b139d",
+      "persona_id": "victor_psy_depuis20ans",
+      "pseudo": "VictorPsyDepuis20Ans",
+      "parent_id": null,
+      "text": "VictorPsyDepuis20Ans repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 29.0
+    },
+    {
+      "id": "e97716b9-d4c8-4f23-951c-fb2f9fdf8f98",
+      "persona_id": "zhom_ronfle_encore",
+      "pseudo": "ZhomRonfleEncore",
+      "parent_id": null,
+      "text": "ZhomRonfleEncore repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 30.0
+    },
+    {
+      "id": "c81b57e5-b01b-47a3-b857-e7df11c9d5ce",
+      "persona_id": "claire_bienveillante",
+      "pseudo": "ClaireBienveillante",
+      "parent_id": "9b8dbd0b-86f2-4a9d-a16e-c7a15f9bb313",
+      "text": "[quote=AdoEnDétresse2005] AdoEnDétresse2005 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 30.0
+    },
+    {
+      "id": "3afa7a98-99a7-4aa9-8e3d-bb25df5018ea",
+      "persona_id": "coach_vitamines",
+      "pseudo": "CoachVitamines",
+      "parent_id": "d664fd8d-9205-429f-a058-8485bc7469b9",
+      "text": "[quote=BellEtRebelle75] BellEtRebelle75 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 31.0
+    },
+    {
+      "id": "8172c1f1-6cc2-492f-8a3a-8a89c4b1fe31",
+      "persona_id": "dr_internet75",
+      "pseudo": "DrInternet75",
+      "parent_id": "d27bf4c5-653e-4c8a-8e06-d7c1cc8815a4",
+      "text": "[quote=CapitaineDoctissimo] CapitaineDoctissimo repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 32.0
+    },
+    {
+      "id": "0a209353-e70f-48ba-8b33-280148feee1c",
+      "persona_id": "en_attente_de_bb2",
+      "pseudo": "EnAttenteDeBB2",
+      "parent_id": "97e4a60b-75f9-4682-983e-0682cf886adc",
+      "text": "[quote=CarolineDuQuercy] CarolineDuQuercy repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 33.0
+    },
+    {
+      "id": "092e811d-cdaf-42f4-8034-f1040c3a896a",
+      "persona_id": "florence_bien_etre",
+      "pseudo": "FlorenceBien-Être",
+      "parent_id": "3ab91406-69ff-43a3-bf9a-48f2ff68d828",
+      "text": "[quote=Cessou_l_unique] Cessou_l_unique repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 34.0
+    },
+    {
+      "id": "16f1e3bb-3288-42f0-8a99-2622908308ed",
+      "persona_id": "infirmiere_urgences42",
+      "pseudo": "InfirmièreUrgences42",
+      "parent_id": "888b50f6-07c1-4efa-80ed-3e7340e38536",
+      "text": "[quote=ClaireBienveillante] ClaireBienveillante repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 35.0
+    },
+    {
+      "id": "ec2334d0-b403-4394-9362-857b2aec6424",
+      "persona_id": "jolie_brune29",
+      "pseudo": "JolieBrune29",
+      "parent_id": "a5873329-5cb8-4f98-8d59-4ba7a35dcbf7",
+      "text": "[quote=CoachVitamines] CoachVitamines repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 36.0
+    },
+    {
+      "id": "97356fcf-aac8-4f42-9e8e-cf4f94cbf702",
+      "persona_id": "justine_regime_dukan",
+      "pseudo": "JustineRégimeDukan",
+      "parent_id": "1d189ec3-4ff6-4b8f-a584-f26d902a7689",
+      "text": "[quote=DrInternet75] DrInternet75 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 37.0
+    },
+    {
+      "id": "32f7d2a9-d692-4a69-8206-42cf9be61f02",
+      "persona_id": "karine_pma_j547",
+      "pseudo": "Karine_PMA_J547",
+      "parent_id": "9e8d5b1d-d1a9-4f5b-ab6f-112c75e7b11d",
+      "text": "[quote=EnAttenteDeBB2] EnAttenteDeBB2 repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 38.0
+    },
+    {
+      "id": "2a3bb12c-b80d-4006-99a6-c62d89c293de",
+      "persona_id": "karinette_du_57",
+      "pseudo": "Karinette_du_57",
+      "parent_id": "171d8670-a7b6-46ad-8397-af0d7a998e88",
+      "text": "[quote=FlorenceBien-Être] FlorenceBien-Être repond sur 'ya une vraie diff entre paracetamol et ibuprofene ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 39.0
+    }
+  ],
+  "n_personas": 30,
+  "completed_at": 1777741227.9417775
+}

@@ -1,0 +1,329 @@
+{
+  "thread_id": "demo-2",
+  "topic": "ya quelqu'un qui a essaye l'arnica pour la migraine ?",
+  "seed_post": "ya quelqu'un qui a essaye l'arnica pour la migraine ?",
+  "posts": [
+    {
+      "id": "7bebdf8d-a756-429d-af65-504fd65ebe0b",
+      "persona_id": "ado_en_detresse2005",
+      "pseudo": "AdoEnDétresse2005",
+      "parent_id": null,
+      "text": "AdoEnDétresse2005 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 1.0
+    },
+    {
+      "id": "8a9339f6-7643-49a1-80fb-fa8021a4f5d4",
+      "persona_id": "bell_et_rebelle75",
+      "pseudo": "BellEtRebelle75",
+      "parent_id": null,
+      "text": "BellEtRebelle75 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 2.0
+    },
+    {
+      "id": "4d740c2c-faa2-4387-8dbc-1297f4db746c",
+      "persona_id": "capitaine_doctissimo",
+      "pseudo": "CapitaineDoctissimo",
+      "parent_id": null,
+      "text": "CapitaineDoctissimo repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 3.0
+    },
+    {
+      "id": "40bc26aa-8460-42d5-8e74-06842a0e04e8",
+      "persona_id": "caroline_du_quercy",
+      "pseudo": "CarolineDuQuercy",
+      "parent_id": null,
+      "text": "CarolineDuQuercy repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 4.0
+    },
+    {
+      "id": "798d381e-3fd5-4d1b-8e4f-06f1a2f94280",
+      "persona_id": "cessou_l_unique",
+      "pseudo": "Cessou_l_unique",
+      "parent_id": null,
+      "text": "Cessou_l_unique repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 5.0
+    },
+    {
+      "id": "0a2c0b64-64f5-461a-9dbf-4a2dfa9ea870",
+      "persona_id": "claire_bienveillante",
+      "pseudo": "ClaireBienveillante",
+      "parent_id": null,
+      "text": "ClaireBienveillante repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 6.0
+    },
+    {
+      "id": "e15f0692-2d75-4b20-9183-da28608617c1",
+      "persona_id": "coach_vitamines",
+      "pseudo": "CoachVitamines",
+      "parent_id": null,
+      "text": "CoachVitamines repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 7.0
+    },
+    {
+      "id": "ae52ec18-e46f-4d2e-b8fe-18a7c3f3133f",
+      "persona_id": "dr_internet75",
+      "pseudo": "DrInternet75",
+      "parent_id": null,
+      "text": "DrInternet75 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 8.0
+    },
+    {
+      "id": "9a130974-1215-48b4-970d-50689c346f68",
+      "persona_id": "en_attente_de_bb2",
+      "pseudo": "EnAttenteDeBB2",
+      "parent_id": null,
+      "text": "EnAttenteDeBB2 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 9.0
+    },
+    {
+      "id": "eb3846ea-72be-46f2-9cc8-35ccb8c304f0",
+      "persona_id": "florence_bien_etre",
+      "pseudo": "FlorenceBien-Être",
+      "parent_id": null,
+      "text": "FlorenceBien-Être repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 10.0
+    },
+    {
+      "id": "49cf164e-0678-4a23-8407-cfc73fb99c7e",
+      "persona_id": "infirmiere_urgences42",
+      "pseudo": "InfirmièreUrgences42",
+      "parent_id": null,
+      "text": "InfirmièreUrgences42 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 11.0
+    },
+    {
+      "id": "876e13e0-b3ae-4d22-a6b1-9cff64dfa25d",
+      "persona_id": "jolie_brune29",
+      "pseudo": "JolieBrune29",
+      "parent_id": null,
+      "text": "JolieBrune29 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 12.0
+    },
+    {
+      "id": "47114de0-6011-465c-bb6d-eeb9490e95ad",
+      "persona_id": "justine_regime_dukan",
+      "pseudo": "JustineRégimeDukan",
+      "parent_id": null,
+      "text": "JustineRégimeDukan repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 13.0
+    },
+    {
+      "id": "6c83abf3-907a-4e3b-92f1-f93d31f86525",
+      "persona_id": "karine_pma_j547",
+      "pseudo": "Karine_PMA_J547",
+      "parent_id": null,
+      "text": "Karine_PMA_J547 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 14.0
+    },
+    {
+      "id": "0595c7a8-9c73-4126-b936-4253af14b30a",
+      "persona_id": "karinette_du_57",
+      "pseudo": "Karinette_du_57",
+      "parent_id": null,
+      "text": "Karinette_du_57 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 15.0
+    },
+    {
+      "id": "09eadbb2-1062-4a54-a98a-f3cfc451aa22",
+      "persona_id": "lulu2974_reunion",
+      "pseudo": "Lulu2974 Réunion",
+      "parent_id": null,
+      "text": "Lulu2974 Réunion repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 16.0
+    },
+    {
+      "id": "7320e92a-846b-4fe5-b1d9-54116ccd0b07",
+      "persona_id": "ma_puce_pour_mai05",
+      "pseudo": "MaPucePour_Mai05",
+      "parent_id": null,
+      "text": "MaPucePour_Mai05 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 17.0
+    },
+    {
+      "id": "31b78886-1865-467b-b953-98648974019c",
+      "persona_id": "maman_comblee04",
+      "pseudo": "MamanComblée04",
+      "parent_id": null,
+      "text": "MamanComblée04 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 18.0
+    },
+    {
+      "id": "51ced92a-1a34-43a3-ae0b-3e5a92a591f7",
+      "persona_id": "maman_de3_loulous",
+      "pseudo": "MamanDe3Loulous",
+      "parent_id": null,
+      "text": "MamanDe3Loulous repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 19.0
+    },
+    {
+      "id": "eb5e95e4-5608-45e0-a337-c7620aea4b65",
+      "persona_id": "michel_du_lot46",
+      "pseudo": "MichelDuLot46",
+      "parent_id": null,
+      "text": "MichelDuLot46 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 20.0
+    },
+    {
+      "id": "f57a413f-0d35-4a78-be80-f6aaaa7d0e41",
+      "persona_id": "nathalie_zen_attitude",
+      "pseudo": "NathalieZenAttitude",
+      "parent_id": null,
+      "text": "NathalieZenAttitude repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 21.0
+    },
+    {
+      "id": "6866e436-bce2-4342-9903-015902304ba7",
+      "persona_id": "paul_nutrition_facts",
+      "pseudo": "PaulNutritionFacts",
+      "parent_id": null,
+      "text": "PaulNutritionFacts repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 22.0
+    },
+    {
+      "id": "53035d7b-28ad-4538-b3a9-c9261b5308cd",
+      "persona_id": "pharmacienne_de_quartier",
+      "pseudo": "PharmacienneDeQuartier",
+      "parent_id": null,
+      "text": "PharmacienneDeQuartier repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 23.0
+    },
+    {
+      "id": "40675a49-9ba0-4ccd-a3a4-6d3d5c10b074",
+      "persona_id": "princesse_du_93",
+      "pseudo": "Princesse_du_93",
+      "parent_id": null,
+      "text": "Princesse_du_93 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 24.0
+    },
+    {
+      "id": "93b5dfec-0cfc-4a2f-9c00-ec123bde036c",
+      "persona_id": "psy_en_formation",
+      "pseudo": "PsyEnFormation",
+      "parent_id": null,
+      "text": "PsyEnFormation repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 25.0
+    },
+    {
+      "id": "20d1f6c3-e7ab-4ef2-8494-a7bc7f11a50d",
+      "persona_id": "sandra67",
+      "pseudo": "Sandra67",
+      "parent_id": null,
+      "text": "Sandra67 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 26.0
+    },
+    {
+      "id": "49c21cea-1e7a-46fa-bbd9-292a53bdf93e",
+      "persona_id": "true_researcher88",
+      "pseudo": "TrueResearcher88",
+      "parent_id": null,
+      "text": "TrueResearcher88 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 27.0
+    },
+    {
+      "id": "053db157-a591-458c-bb9d-b2ef8b47fc34",
+      "persona_id": "vegetarian_for_life",
+      "pseudo": "VegetarianForLife",
+      "parent_id": null,
+      "text": "VegetarianForLife repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 28.0
+    },
+    {
+      "id": "55347679-84d7-4c69-b5a6-ae44cd9a3af2",
+      "persona_id": "victor_psy_depuis20ans",
+      "pseudo": "VictorPsyDepuis20Ans",
+      "parent_id": null,
+      "text": "VictorPsyDepuis20Ans repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 29.0
+    },
+    {
+      "id": "89e9df82-b983-4a3a-8354-8ed892a4e172",
+      "persona_id": "zhom_ronfle_encore",
+      "pseudo": "ZhomRonfleEncore",
+      "parent_id": null,
+      "text": "ZhomRonfleEncore repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce:",
+      "arrived_at": 30.0
+    },
+    {
+      "id": "b2fafeed-73ef-44ef-961a-4179529f5334",
+      "persona_id": "claire_bienveillante",
+      "pseudo": "ClaireBienveillante",
+      "parent_id": "7bebdf8d-a756-429d-af65-504fd65ebe0b",
+      "text": "[quote=AdoEnDétresse2005] AdoEnDétresse2005 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 30.0
+    },
+    {
+      "id": "f332ef74-ab3d-4f5a-a3d9-31a3c3b7de1b",
+      "persona_id": "coach_vitamines",
+      "pseudo": "CoachVitamines",
+      "parent_id": "8a9339f6-7643-49a1-80fb-fa8021a4f5d4",
+      "text": "[quote=BellEtRebelle75] BellEtRebelle75 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 31.0
+    },
+    {
+      "id": "d4b99520-79c6-4a67-9fbc-24e63208ab44",
+      "persona_id": "dr_internet75",
+      "pseudo": "DrInternet75",
+      "parent_id": "4d740c2c-faa2-4387-8dbc-1297f4db746c",
+      "text": "[quote=CapitaineDoctissimo] CapitaineDoctissimo repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 32.0
+    },
+    {
+      "id": "76baaf8c-f78e-4e2e-8adc-e65b0dde84a1",
+      "persona_id": "en_attente_de_bb2",
+      "pseudo": "EnAttenteDeBB2",
+      "parent_id": "40bc26aa-8460-42d5-8e74-06842a0e04e8",
+      "text": "[quote=CarolineDuQuercy] CarolineDuQuercy repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 33.0
+    },
+    {
+      "id": "3ad6eb5f-bdb8-4663-a328-53a7a1bc558e",
+      "persona_id": "florence_bien_etre",
+      "pseudo": "FlorenceBien-Être",
+      "parent_id": "798d381e-3fd5-4d1b-8e4f-06f1a2f94280",
+      "text": "[quote=Cessou_l_unique] Cessou_l_unique repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 34.0
+    },
+    {
+      "id": "eca8b3db-a326-49b7-ba90-6ed33d2cfdb5",
+      "persona_id": "infirmiere_urgences42",
+      "pseudo": "InfirmièreUrgences42",
+      "parent_id": "0a2c0b64-64f5-461a-9dbf-4a2dfa9ea870",
+      "text": "[quote=ClaireBienveillante] ClaireBienveillante repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 35.0
+    },
+    {
+      "id": "c61d6f14-1acd-4626-b5c6-bdc96254c350",
+      "persona_id": "jolie_brune29",
+      "pseudo": "JolieBrune29",
+      "parent_id": "e15f0692-2d75-4b20-9183-da28608617c1",
+      "text": "[quote=CoachVitamines] CoachVitamines repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 36.0
+    },
+    {
+      "id": "52f4d7e5-13d1-4e2f-9c67-4d88bd15e912",
+      "persona_id": "justine_regime_dukan",
+      "pseudo": "JustineRégimeDukan",
+      "parent_id": "ae52ec18-e46f-4d2e-b8fe-18a7c3f3133f",
+      "text": "[quote=DrInternet75] DrInternet75 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 37.0
+    },
+    {
+      "id": "d90ae4fc-68d2-49f8-ab30-03295927fe79",
+      "persona_id": "karine_pma_j547",
+      "pseudo": "Karine_PMA_J547",
+      "parent_id": "9a130974-1215-48b4-970d-50689c346f68",
+      "text": "[quote=EnAttenteDeBB2] EnAttenteDeBB2 repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 38.0
+    },
+    {
+      "id": "31f9ec4f-2d74-447b-a795-73dcd6147a87",
+      "persona_id": "karinette_du_57",
+      "pseudo": "Karinette_du_57",
+      "parent_id": "eb3846ea-72be-46f2-9cc8-35ccb8c304f0",
+      "text": "[quote=FlorenceBien-Être] FlorenceBien-Être repond sur 'ya quelqu'un qui a essaye l'arnica pour la migraine ?' avec son style Doctissimo :bounce: [/quote] Je suis pas d'accord du tout :love:",
+      "arrived_at": 39.0
+    }
+  ],
+  "n_personas": 30,
+  "completed_at": 1777741227.8100681
+}

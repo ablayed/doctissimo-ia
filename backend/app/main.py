@@ -1,33 +1,60 @@
-import os
 import json
-import uuid
+import os
 import time
+import uuid
 from contextlib import asynccontextmanager
-from typing import Any
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
 from app.graph import graph
 from app.limits import check_thread_quota
 from app.personas import load_all
-from app.state_store import load_thread, save_thread, zrevrange, zcard
+from app.state_store import load_thread, save_thread, zcard, zrevrange, zscore
+
+
+VERSION = "0.6.0"
+APP_START_TIME = time.time()
+_warmed = False
+
+
+async def _run_warmup() -> dict[str, str]:
+    global _warmed
+    if _warmed:
+        return {"status": "already_warm"}
+    try:
+        from app.rag import _embedding_model
+
+        model = _embedding_model()
+        model.encode(["warmup ping"], return_dense=True)
+        from app.azure import call_llm
+
+        await call_llm(
+            "mini",
+            [{"role": "user", "content": "hi"}],
+            max_tokens=5,
+            temperature=0.0,
+        )
+        _warmed = True
+        return {"status": "warmed"}
+    except Exception as exc:
+        print(f"Warmup failed (non-fatal): {exc}")
+        return {"status": "warm_failed", "detail": str(exc)}
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Starting Doctissimo.IA backend...")
+    await _run_warmup()
     yield
 
 
-VERSION = "0.5.0"
-
-
 class StartReq(BaseModel):
-    topic: str
-    seed_post: str
+    topic: str = Field(min_length=1)
+    seed_post: str = Field(min_length=1)
     persona_ids: list[str] | None = None
 
 
@@ -50,43 +77,34 @@ async def health() -> dict[str, str]:
 
 @app.get("/api/warm")
 async def warm() -> dict[str, str]:
-    return {"status": "already_warm"}
+    return await _run_warmup()
 
 
 @app.get("/api/smoke")
 async def smoke() -> dict[str, str]:
-    """E2E ping: confirms Azure works. Returns one short LLM completion."""
     from app.azure import call_llm
 
     try:
         text = await call_llm(
             "mini",
-            [
-                {
-                    "role": "user",
-                    "content": "Réponds UNIQUEMENT par 'OK Doctissimo' en français.",
-                }
-            ],
+            [{"role": "user", "content": "Reponds UNIQUEMENT par 'OK Doctissimo'."}],
             max_tokens=20,
             temperature=0.0,
         )
         return {"status": "ok", "azure_says": text.strip()}
-    except Exception as e:
-        return {"status": "error", "detail": str(e)}
+    except Exception as exc:
+        return {"status": "error", "detail": str(exc)}
 
 
 async def _azure_ok() -> bool:
-    if not (
-        os.environ.get("AZURE_OPENAI_ENDPOINT")
-        and os.environ.get("AZURE_OPENAI_API_KEY")
-    ):
+    if not (os.environ.get("AZURE_OPENAI_ENDPOINT") and os.environ.get("AZURE_OPENAI_API_KEY")):
         return False
     try:
         from app.azure import call_llm
 
         text = await call_llm(
             "mini",
-            [{"role": "user", "content": "Réponds uniquement OK."}],
+            [{"role": "user", "content": "Reponds uniquement OK."}],
             max_tokens=5,
             temperature=0.0,
         )
@@ -96,10 +114,7 @@ async def _azure_ok() -> bool:
 
 
 async def _redis_ok() -> bool:
-    if not (
-        os.environ.get("UPSTASH_REDIS_REST_URL")
-        and os.environ.get("UPSTASH_REDIS_REST_TOKEN")
-    ):
+    if not (os.environ.get("UPSTASH_REDIS_REST_URL") and os.environ.get("UPSTASH_REDIS_REST_TOKEN")):
         return False
     try:
         key = f"info-{uuid.uuid4()}"
@@ -110,7 +125,7 @@ async def _redis_ok() -> bool:
         return False
 
 
-def _extract_vector_count(info: Any) -> int:
+def _extract_vector_count(info):
     if isinstance(info, dict):
         for key in ("vector_count", "vectorCount", "total_vectors", "totalVectors"):
             if key in info:
@@ -123,10 +138,7 @@ def _extract_vector_count(info: Any) -> int:
 
 
 async def _rag_indexed() -> bool:
-    if not (
-        os.environ.get("UPSTASH_VECTOR_REST_URL")
-        and os.environ.get("UPSTASH_VECTOR_REST_TOKEN")
-    ):
+    if not (os.environ.get("UPSTASH_VECTOR_REST_URL") and os.environ.get("UPSTASH_VECTOR_REST_TOKEN")):
         return False
     try:
         from upstash_vector import Index
@@ -141,18 +153,28 @@ async def _rag_indexed() -> bool:
 
 
 @app.get("/api/info")
-async def info() -> dict[str, bool | int | str]:
+async def info():
+    latest_thread_id = None
+    last_thread_at = None
+    recent = await zrevrange("recent_threads", 0, 0)
+    if recent:
+        latest_thread_id = recent[0]
+        last_thread_at = await zscore("recent_threads", latest_thread_id)
     return {
         "version": VERSION,
         "personas_loaded": len(load_all()),
         "rag_indexed": await _rag_indexed(),
         "azure_ok": await _azure_ok(),
         "redis_ok": await _redis_ok(),
+        "uptime_seconds": int(time.time() - APP_START_TIME),
+        "last_thread_at": last_thread_at,
+        "warmup_status": _warmed,
+        "latest_thread_id": latest_thread_id,
     }
 
 
 @app.get("/api/forum/{thread_id}/replay")
-async def replay(thread_id: str) -> dict[str, object]:
+async def replay(thread_id: str):
     data = await load_thread(thread_id)
     if not data or not data.get("posts"):
         raise HTTPException(404, "thread not found or expired")
@@ -161,25 +183,39 @@ async def replay(thread_id: str) -> dict[str, object]:
 
 
 @app.get("/api/forum/recent")
-async def recent(limit: int = 10) -> dict[str, list[dict[str, object]]]:
+async def recent(limit: int = 10):
     raw = await zrevrange("recent_threads", 0, limit - 1)
     items = []
     for tid in raw:
-        t = await load_thread(tid)
-        if t:
+        thread = await load_thread(tid)
+        if thread:
             items.append(
                 {
                     "thread_id": tid,
-                    "topic": t["topic"],
-                    "n_replies": len(t.get("posts", [])),
-                    "completed_at": t.get("completed_at"),
+                    "topic": thread["topic"],
+                    "n_replies": len(thread.get("posts", [])),
+                    "completed_at": thread.get("completed_at"),
                 }
             )
     return {"items": items}
 
 
+@app.get("/api/forum/demo/{n}")
+async def demo_thread(n: int):
+    if n not in range(1, 6):
+        raise HTTPException(404, "demo not found")
+    path = Path(__file__).parent.parent.parent / "data" / "seed_threads" / f"{n}.json"
+    if not path.exists():
+        raise HTTPException(404, "demo not seeded")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 @app.post("/api/forum/start")
-async def start(req: StartReq, request: Request) -> dict[str, str | int]:
+async def start(req: StartReq, request: Request):
+    if len(req.seed_post) > 1000:
+        raise HTTPException(400, "Message trop long. 1000 caracteres max.")
+    if len(req.topic) > 200:
+        raise HTTPException(400, "Sujet trop long. 200 caracteres max.")
     thread_id = str(uuid.uuid4())[:8]
     ip_h = await check_thread_quota(request)
     all_personas = load_all()
@@ -201,7 +237,7 @@ async def start(req: StartReq, request: Request) -> dict[str, str | int]:
 
 
 @app.get("/api/forum/{thread_id}/stream")
-async def stream(thread_id: str) -> EventSourceResponse:
+async def stream(thread_id: str):
     data = await load_thread(thread_id)
     if not data:
         raise HTTPException(404, "thread not found")
@@ -224,11 +260,7 @@ async def stream(thread_id: str) -> EventSourceResponse:
         }
         seen_post_ids: set[str] = set()
         yield {"event": "start", "data": json.dumps({"thread_id": thread_id})}
-        async for chunk in graph.astream(
-            initial_state,
-            stream_mode="updates",
-            config={"recursion_limit": 100, "max_concurrency": 12},
-        ):
+        async for chunk in graph.astream(initial_state, stream_mode="updates", config={"recursion_limit": 100, "max_concurrency": 12}):
             for delta in chunk.values():
                 if not delta:
                     continue
@@ -246,7 +278,7 @@ async def stream(thread_id: str) -> EventSourceResponse:
 
 
 @app.get("/admin/stats")
-async def admin_stats(key: str = "") -> dict[str, object]:
+async def admin_stats(key: str = ""):
     admin_key = os.environ.get("ADMIN_KEY", "")
     if not admin_key or key != admin_key:
         raise HTTPException(403, "Forbidden")
@@ -265,5 +297,5 @@ async def admin_stats(key: str = "") -> dict[str, object]:
 
 
 @app.get("/api/forum/easter-egg")
-async def easter_egg() -> dict[str, str]:
+async def easter_egg():
     return {"hint": "Try the Konami code on the homepage. ↑↑↓↓←→←→BA"}

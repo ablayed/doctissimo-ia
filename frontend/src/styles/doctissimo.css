@@ -808,6 +808,15 @@ input[type="text"]:focus, textarea:focus {
   border-top: 1px dashed #CC0066;
   padding-top: 6px;
 }
+.footer .urgency-line {
+  background: #FFFFCC;
+  border: 2px solid #FF0000;
+  padding: 6px;
+  margin: 8px 0;
+  color: #CC0000;
+  font-weight: bold;
+  font-family: Tahoma, Verdana, sans-serif;
+}
 .footer .frontpage-credit {
   font-style: italic;
   color: #CC0066;
@@ -841,6 +850,50 @@ input[type="text"]:focus, textarea:focus {
 .text-pink { color: #CC0066; }
 .text-blue { color: #003366; }
 .font-tahoma { font-family: Tahoma, Verdana, sans-serif; }
+
+.error-banner, .warning-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.error-banner {
+  background: #FFFFCC;
+  border: 2px solid #CC0000;
+  color: #990000;
+}
+.warning-banner {
+  background: #FFF7CC;
+  border: 2px solid #CC9900;
+  color: #663300;
+}
+.demo-toggle {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 80;
+  background: #FFFFFF;
+  border: 2px solid #CC0066;
+  padding: 6px;
+  width: 160px;
+}
+.demo-toggle-title {
+  background: #CC0066;
+  color: #FFFFFF;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-weight: bold;
+  padding: 2px 4px;
+  margin-bottom: 6px;
+}
+.demo-toggle-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
 .retro-window-text { color: #666666; font-size: 9px; }
 .banner-ad-leaderboard img, .banner-ad-skyscraper img {
   width: 100%;

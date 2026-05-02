@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import AdRotator from './AdRotator'
 import ConstructionScroller from './ConstructionScroller'
+import DemoToggle from './DemoToggle'
 import Footer from './Footer'
 import Header from './Header'
 import ModemModal from './ModemModal'
@@ -43,13 +44,16 @@ export default function ThreadPage() {
   const [seed, setSeed] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [streamRetry, setStreamRetry] = useState<{ topic: string; seedPost: string } | null>(null)
   const [showRevealBanner, setShowRevealBanner] = useState(false)
   const [revealOpen, setRevealOpen] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [showPseudoModal, setShowPseudoModal] = useState(false)
   const [nightMode, setNightMode] = useState(false)
   const [modemReady, setModemReady] = useState(false)
+  const [slowStreamWarning, setSlowStreamWarning] = useState(false)
   const eventSourceRef = useRef<EventSource | null>(null)
+  const slowTimerRef = useRef<number | null>(null)
   const konamiBuffer = useRef<string[]>([])
   const logoClicks = useRef(0)
   const user = useUser()
@@ -58,6 +62,7 @@ export default function ThreadPage() {
   const { counter, elapsed } = useVisitorCounter()
 
   useEffect(() => {
+    fetch('/api/warm').catch(() => {})
     const params = new URLSearchParams(window.location.search)
     const threadQuery = params.get('t')
     if (threadQuery) void loadReplay(threadQuery)
@@ -111,10 +116,36 @@ export default function ThreadPage() {
     }
   }, [counter])
 
+  useEffect(
+    () => () => {
+      closeStream()
+      if (slowTimerRef.current) window.clearTimeout(slowTimerRef.current)
+    },
+    [],
+  )
+
   const sortedPosts = useMemo(() => posts.slice().sort((a, b) => a.arrived_at - b.arrived_at), [posts])
 
   function closeStream() {
     eventSourceRef.current?.close()
+    eventSourceRef.current = null
+    if (slowTimerRef.current) {
+      window.clearTimeout(slowTimerRef.current)
+      slowTimerRef.current = null
+    }
+  }
+
+  function hydrateThread(data: ReplayThread) {
+    closeStream()
+    setError('')
+    setLoading(false)
+    setSlowStreamWarning(false)
+    setTopic(data.topic)
+    setSeed(data.seed_post)
+    setThreadId(data.thread_id)
+    setPosts(data.posts)
+    setShowRevealBanner(votesApi.totalVotes >= 10)
+    window.history.replaceState(null, '', `?t=${data.thread_id}`)
   }
 
   async function loadReplay(selectedThreadId: string) {
@@ -127,14 +158,26 @@ export default function ThreadPage() {
       const response = await fetch(`/api/forum/${selectedThreadId}/replay`)
       if (!response.ok) throw new Error(`Erreur ${response.status}`)
       const data = (await response.json()) as ReplayThread
-      setTopic(data.topic)
-      setSeed(data.seed_post)
-      setThreadId(data.thread_id)
-      setPosts(data.posts)
-      setShowRevealBanner(votesApi.totalVotes >= 10)
-      window.history.replaceState(null, '', `?t=${data.thread_id}`)
+      hydrateThread(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function loadDemo(demoNumber: number) {
+    setLoading(true)
+    setError('')
+    setPosts([])
+    setThreadId(null)
+    try {
+      const response = await fetch(`/api/forum/demo/${demoNumber}`)
+      if (!response.ok) throw new Error(`Demo ${demoNumber} indisponible`)
+      const data = (await response.json()) as ReplayThread
+      hydrateThread(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur demo inconnue')
     } finally {
       setLoading(false)
     }
@@ -150,31 +193,48 @@ export default function ThreadPage() {
     setShowRevealBanner(false)
     setRevealOpen(false)
     setRevealed(false)
+    setStreamRetry(null)
+    setSlowStreamWarning(false)
     try {
       const response = await fetch('/api/forum/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: nextTopic, seed_post: nextSeed }),
       })
-      if (!response.ok) throw new Error(`Erreur ${response.status}`)
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({ detail: `Erreur ${response.status}` }))
+        if (response.status === 429) {
+          throw new Error('Trop de requetes. Patientez 1 minute (Doctissimo en 2003 ramait aussi).')
+        }
+        throw new Error(String(payload.detail || `Erreur ${response.status}`))
+      }
       const data = (await response.json()) as StartResponse
       setThreadId(data.thread_id)
       setTopic(nextTopic)
       const source = new EventSource(`/api/forum/${data.thread_id}/stream`)
       eventSourceRef.current = source
+      slowTimerRef.current = window.setTimeout(() => {
+        setSlowStreamWarning(true)
+      }, 30000)
       source.addEventListener('post', (message) => {
         const post = JSON.parse((message as MessageEvent).data) as ForumPost
         setPosts((current) => (current.some((item) => item.id === post.id) ? current : [...current, post]))
+        setSlowStreamWarning(false)
+        if (slowTimerRef.current) {
+          window.clearTimeout(slowTimerRef.current)
+          slowTimerRef.current = null
+        }
         sound.playDing()
       })
       source.addEventListener('done', () => {
-        source.close()
+        closeStream()
         setLoading(false)
         window.history.replaceState(null, '', `?t=${data.thread_id}`)
       })
       source.onerror = () => {
-        setError('Connexion interrompue.')
-        source.close()
+        closeStream()
+        setError('La connexion a coupe... Cliquez pour reessayer.')
+        setStreamRetry({ topic: nextTopic, seedPost: nextSeed })
         setLoading(false)
       }
     } catch (err) {
@@ -233,6 +293,7 @@ export default function ThreadPage() {
       {!modemReady && <ModemModal onComplete={() => setModemReady(true)} onPlayModem={sound.playModem} />}
       <SoundToggle muted={sound.muted} onToggle={() => sound.setMuted(!sound.muted)} />
       <ConstructionScroller />
+      <DemoToggle onSelect={loadDemo} />
       <PseudoModal
         open={showPseudoModal}
         onSkip={() => setShowPseudoModal(false)}
@@ -241,13 +302,7 @@ export default function ThreadPage() {
           setShowPseudoModal(false)
         }}
       />
-      <RevealModal
-        open={revealOpen}
-        onClose={() => setRevealOpen(false)}
-        votes={votesApi.votes}
-        posts={sortedPosts}
-        truthTellerId={TRUTH_TELLER_ID}
-      />
+      <RevealModal open={revealOpen} onClose={() => setRevealOpen(false)} votes={votesApi.votes} posts={sortedPosts} truthTellerId={TRUTH_TELLER_ID} />
       <div className="doctissimo-page">
         {user.pseudo && (
           <div className="connected-banner">
@@ -265,15 +320,26 @@ export default function ThreadPage() {
         <StatsBar counter={counter} elapsed={elapsed} />
         <div className="main-layout">
           <main className="thread-main">
+            {error && (
+              <div className="error-banner">
+                <span>{error}</span>
+                {streamRetry && (
+                  <button className="btn-pink" type="button" onClick={() => startThread(streamRetry.topic, streamRetry.seedPost)}>
+                    Reessayer
+                  </button>
+                )}
+              </div>
+            )}
+            {slowStreamWarning && threadId && posts.length === 0 && <div className="warning-banner">Le serveur reflechit. Si rien n'arrive, le modem a peut-etre un probleme.</div>}
             {!threadId && (
               <form className="thread-form" onSubmit={submit}>
                 <label>
                   Sujet
-                  <input value={topic} onChange={(event) => setTopic(event.target.value)} type="text" />
+                  <input value={topic} onChange={(event) => setTopic(event.target.value)} type="text" maxLength={200} />
                 </label>
                 <label>
                   Message
-                  <textarea value={seedPost} onChange={(event) => handleSeedChange(event.target.value)} rows={6} />
+                  <textarea value={seedPost} onChange={(event) => handleSeedChange(event.target.value)} rows={6} maxLength={1000} />
                 </label>
                 <button className="btn-pink" type="submit" disabled={loading}>
                   Poster :bounce:
@@ -323,7 +389,6 @@ export default function ThreadPage() {
                 ))}
               </>
             )}
-            {error && <div className="thread-form">{error}</div>}
           </main>
           <aside className="sidebar">
             <RecentThreads onSelect={loadReplay} />

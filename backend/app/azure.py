@@ -24,7 +24,7 @@ DEPLOYMENTS = {
     max_time=25,
     jitter=backoff.full_jitter,
 )
-async def call_llm(
+async def _call_with_backoff(
     model: str,
     messages: list[dict],
     max_tokens: int,
@@ -39,3 +39,23 @@ async def call_llm(
         temperature=temperature,
     )
     return resp.choices[0].message.content or ""
+
+
+async def call_llm(
+    model: str,
+    messages: list[dict],
+    max_tokens: int,
+    temperature: float = 0.7,
+    persona_pseudo: str | None = None,
+) -> str:
+    try:
+        return await _call_with_backoff(
+            model,
+            messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+    except (RateLimitError, APIError, TimeoutError, OSError):
+        if persona_pseudo:
+            return f"*** {persona_pseudo} a quitte la conversation (probleme de modem 56k) ***"
+        return "*** Erreur de connexion ***"

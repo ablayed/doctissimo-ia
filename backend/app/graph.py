@@ -14,6 +14,9 @@ from app.safety import is_emergency, refusal_text
 from app.schemas import Persona
 
 
+RAG_FALLBACK_CONTEXT = "(Aucune reference trouvee dans la base. Reponds prudemment et oriente vers consultation medicale.)"
+
+
 class ForumState(TypedDict):
     thread_id: str
     topic: str
@@ -35,10 +38,43 @@ async def _call_llm(
     messages: list[dict],
     max_tokens: int,
     temperature: float = 0.7,
+    persona_pseudo: str | None = None,
 ) -> str:
     from app.azure import call_llm
 
-    return await call_llm(model, messages, max_tokens=max_tokens, temperature=temperature)
+    return await call_llm(
+        model,
+        messages,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        persona_pseudo=persona_pseudo,
+    )
+
+
+async def _call_llm_with_pseudo(
+    model: str,
+    messages: list[dict],
+    max_tokens: int,
+    temperature: float,
+    persona_pseudo: str,
+) -> str:
+    try:
+        return await _call_llm(
+            model,
+            messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            persona_pseudo=persona_pseudo,
+        )
+    except TypeError as exc:
+        if "persona_pseudo" not in str(exc):
+            raise
+        return await _call_llm(
+            model,
+            messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
 
 
 def _approx_tokens(messages: list[dict], response_text: str) -> int:
@@ -53,19 +89,31 @@ async def orchestrator(state: ForumState) -> dict:
 
 
 async def persona_responder(payload: dict) -> dict:
+    from app.limits import record_tokens, thread_quota_exceeded
+
     await asyncio.sleep(payload.get("delay", 0.0))
     p = Persona.model_validate(payload["persona"])
+    if await thread_quota_exceeded(payload.get("thread_id", "")):
+        return {
+            "posts": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "persona_id": p.id,
+                    "pseudo": p.pseudo,
+                    "parent_id": None,
+                    "text": "(quota depasse pour ce thread, desole :sweat:)",
+                    "arrived_at": time.time() - payload["t0"],
+                }
+            ]
+        }
     messages = build_persona_messages(p, payload["topic"], payload["seed_post"])
-    text = await _call_llm(
+    text = await _call_llm_with_pseudo(
         p.model,
         messages,
         max_tokens=180,
         temperature=p.temperature,
+        persona_pseudo=p.pseudo,
     )
-    from app.limits import record_tokens, thread_quota_exceeded
-
-    if await thread_quota_exceeded(payload.get("thread_id", "")):
-        return {"posts": []}
     await record_tokens(payload.get("_ip_h", "unknown"), _approx_tokens(messages, text), payload["thread_id"])
     return {
         "posts": [
@@ -82,19 +130,39 @@ async def persona_responder(payload: dict) -> dict:
 
 
 async def expert_responder(payload: dict) -> dict:
+    from app.limits import record_tokens, thread_quota_exceeded
+
     await asyncio.sleep(payload.get("delay", 0.0))
     p = Persona.model_validate(payload["persona"])
+    if await thread_quota_exceeded(payload.get("thread_id", "")):
+        return {
+            "posts": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "persona_id": p.id,
+                    "pseudo": p.pseudo,
+                    "parent_id": None,
+                    "text": "(quota depasse pour ce thread, desole :sweat:)",
+                    "arrived_at": time.time() - payload["t0"],
+                }
+            ]
+        }
+    rag_context = payload.get("rag_context") or ""
+    if len(rag_context.strip()) < 50:
+        rag_context = RAG_FALLBACK_CONTEXT
     messages = build_expert_messages(
         p,
         payload["topic"],
         payload["seed_post"],
-        payload["rag_context"],
+        rag_context,
     )
-    text = await _call_llm("4o", messages, max_tokens=400, temperature=0.3)
-    from app.limits import record_tokens, thread_quota_exceeded
-
-    if await thread_quota_exceeded(payload.get("thread_id", "")):
-        return {"posts": []}
+    text = await _call_llm_with_pseudo(
+        "4o",
+        messages,
+        max_tokens=400,
+        temperature=0.3,
+        persona_pseudo=p.pseudo,
+    )
     await record_tokens(payload.get("_ip_h", "unknown"), _approx_tokens(messages, text), payload["thread_id"])
     return {
         "posts": [
@@ -116,7 +184,7 @@ async def emergency_responder(state: ForumState) -> dict:
             {
                 "id": str(uuid.uuid4()),
                 "persona_id": "system",
-                "pseudo": " Modération Doctissimo.IA",
+                "pseudo": " Moderation Doctissimo.IA",
                 "parent_id": None,
                 "text": refusal_text(),
                 "arrived_at": 0.1,
@@ -128,10 +196,8 @@ async def emergency_responder(state: ForumState) -> dict:
 def reply_planner(state: ForumState) -> dict[str, list[tuple[str, str]]]:
     if state["rag_context"] == "EMERGENCY":
         return {"reply_targets": []}
-
     if not state.get("enable_reply_chains") and len(state.get("personas", [])) != 4:
         return {"reply_targets": []}
-
     wave1_posts = state["posts"]
     candidates: list[tuple[str, str]] = []
     for p in state["personas"]:
@@ -163,7 +229,6 @@ def fanout_wave2(state: ForumState) -> list[Send]:
     posts_by_id = {p["id"]: p for p in state["posts"]}
     personas_by_id = {p["id"]: p for p in state["personas"]}
     t0 = time.time()
-
     sends: list[Send] = []
     for replier_id, target_id in state["reply_targets"]:
         target_post = posts_by_id.get(target_id)
@@ -182,6 +247,7 @@ def fanout_wave2(state: ForumState) -> list[Send]:
                     "personas": state["personas"],
                     "rag_context": state["rag_context"],
                     "reply_targets": state["reply_targets"],
+                    "_ip_h": state.get("_ip_h", "unknown"),
                     "delay": random.uniform(0.5, 8.0),
                     "t0": t0,
                 },
@@ -191,15 +257,32 @@ def fanout_wave2(state: ForumState) -> list[Send]:
 
 
 async def reply_chain_node(payload: dict) -> dict:
+    from app.limits import record_tokens, thread_quota_exceeded
+
     await asyncio.sleep(payload.get("delay", 0.0))
     p = Persona.model_validate(payload["persona"])
     target = SimpleNamespace(**payload["target_post"])
-    msgs = build_reply_messages(p, target, payload["topic"])
-    text = await _call_llm(p.model, msgs, max_tokens=140, temperature=p.temperature)
-    from app.limits import record_tokens, thread_quota_exceeded
-
     if await thread_quota_exceeded(payload.get("thread_id", "")):
-        return {"posts": []}
+        return {
+            "posts": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "persona_id": p.id,
+                    "pseudo": p.pseudo,
+                    "parent_id": target.id,
+                    "text": "(quota depasse pour ce thread, desole :sweat:)",
+                    "arrived_at": time.time() - payload["t0"] + 30.0,
+                }
+            ]
+        }
+    msgs = build_reply_messages(p, target, payload["topic"])
+    text = await _call_llm_with_pseudo(
+        p.model,
+        msgs,
+        max_tokens=140,
+        temperature=p.temperature,
+        persona_pseudo=p.pseudo,
+    )
     await record_tokens(payload.get("_ip_h", "unknown"), _approx_tokens(msgs, text), payload["thread_id"])
     return {
         "posts": [
@@ -272,19 +355,11 @@ g.add_node("reply_planner", reply_planner)
 g.add_node("reply_chain_node", reply_chain_node)
 g.add_node("finalize", finalize)
 g.add_edge(START, "orchestrator")
-g.add_conditional_edges(
-    "orchestrator",
-    fanout_wave1,
-    ["persona_responder", "expert_responder", "emergency_responder"],
-)
+g.add_conditional_edges("orchestrator", fanout_wave1, ["persona_responder", "expert_responder", "emergency_responder"])
 g.add_edge("persona_responder", "reply_planner")
 g.add_edge("expert_responder", "reply_planner")
 g.add_edge("emergency_responder", "finalize")
-g.add_conditional_edges(
-    "reply_planner",
-    fanout_wave2,
-    ["reply_chain_node", "finalize"],
-)
+g.add_conditional_edges("reply_planner", fanout_wave2, ["reply_chain_node", "finalize"])
 g.add_edge("reply_chain_node", "finalize")
 g.add_edge("finalize", END)
 graph = g.compile()

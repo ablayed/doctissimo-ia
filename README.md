@@ -6,7 +6,7 @@ Live URL: https://doctissimo-ia.vercel.app
 
 API info: https://ablaye-doctissimo-ia-api.hf.space/api/info
 
-Stack: Python 3.11 · FastAPI · LangGraph · Azure OpenAI · Upstash Redis/Vector · Vite React · Vercel · Hugging Face Spaces
+Stack: Python 3.11 | FastAPI | LangGraph | Azure OpenAI | Upstash Redis/Vector | Vite React | Vercel | Hugging Face Spaces
 
 Disclaimer: parody site for DEFENDHACK 2026. Do not use it for medical diagnosis, treatment, or emergency decisions.
 
@@ -24,3 +24,12 @@ Disclaimer: parody site for DEFENDHACK 2026. Do not use it for medical diagnosis
 ## Visual
 
 ![Screenshot](docs/screenshots/forum-with-skin.png)
+
+## What works at H+36
+
+- Phase 4 Y2K skin complete: 770px fixed layout, phpBB-style posts, modem modal, sound toggle, rotating ads, and retro chrome
+- Safety audit path in place with hardened regex coverage and visible footer urgency banner
+- Warmup path implemented for startup and `/api/warm`, plus richer `/api/info` health data
+- Edge cases handled: persona timeout fallback, Redis persistence failure fallback, empty RAG fallback, and request length validation
+- Demo mode implemented with 5 pre-cached threads served from `/api/forum/demo/{1-5}` and a hidden frontend demo toggle
+- Final smoke script and safety audit scripts available in `backend/scripts/`
