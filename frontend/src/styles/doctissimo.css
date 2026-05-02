@@ -61,30 +61,104 @@ a:visited {
 
 .post {
   width: 100%;
-  border-collapse: collapse;
   margin-bottom: 8px;
+  border: 1px solid #ff99cc;
   background: #ffffff;
 }
 
-.post:nth-child(even) {
+.post:nth-of-type(even) {
   background: #ffeef5;
 }
 
-.post-avatar {
-  width: 112px;
+.post-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 4px 6px;
+  border-bottom: 1px solid #cc0066;
+  background: #ffcce5;
+  color: #660033;
+  font-weight: bold;
+}
+
+.post-body {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.post-author {
+  width: 150px;
   padding: 6px;
   vertical-align: top;
   text-align: center;
-  border: 1px solid #ff99cc;
   background: #ffcce5;
+}
+
+.post-author b,
+.post-author span {
+  display: block;
+  margin-top: 4px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #cc0066;
+  image-rendering: pixelated;
 }
 
 .post-content {
   min-height: 96px;
   padding: 10px;
-  border: 1px solid #ff99cc;
+  vertical-align: top;
   background: #ffffff;
   line-height: 1.45;
+}
+
+.seed-post {
+  margin-top: 8px;
+}
+
+.seed-content {
+  padding: 10px;
+  background: #ffffff;
+}
+
+.thread-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #660033;
+  font-weight: bold;
+}
+
+.thread-form input,
+.thread-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 3px;
+  border: 1px inset #ff99cc;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 11px;
+}
+
+.thread-form textarea {
+  resize: vertical;
+}
+
+.thread-title,
+.thread-status {
+  margin-bottom: 8px;
+  padding: 5px;
+  border: 1px solid #ff99cc;
+  background: #fff7fb;
+  color: #660033;
+  font-weight: bold;
+}
+
+.smiley {
+  max-width: 18px;
+  max-height: 18px;
+  vertical-align: middle;
 }
 
 .quote {
