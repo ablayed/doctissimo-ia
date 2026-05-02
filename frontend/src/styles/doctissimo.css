@@ -7,7 +7,8 @@ html, body {
   color: #000000;
   line-height: 1.4;
 }
-body { background: #DDDDDD; padding: 0; overflow-x: auto; }
+body { 
+  background: #E5007E url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><circle cx='10' cy='10' r='1' fill='%23FFCCE5'/></svg>") repeat; padding: 0; overflow-x: auto; }
 img { border: 0; vertical-align: middle; }
 a { color: #0000FF; text-decoration: underline; }
 a:visited { color: #800080; }
