@@ -110,10 +110,32 @@ a:visited {
   cursor: pointer;
 }
 
+.btn-pink:disabled {
+  cursor: wait;
+  filter: grayscale(0.3);
+}
+
 .btn-pink:active {
   border: 1px solid #ff99cc;
   border-top-color: #99004d;
   border-left-color: #99004d;
+}
+
+.smoke-result {
+  margin-top: 10px;
+  min-height: 22px;
+  padding: 6px;
+  border: 1px dashed #cc0066;
+  background: #fff7fb;
+  font-weight: bold;
+}
+
+.smoke-result-ok {
+  color: #006600;
+}
+
+.smoke-result-error {
+  color: #cc0000;
 }
 
 .new-badge {
