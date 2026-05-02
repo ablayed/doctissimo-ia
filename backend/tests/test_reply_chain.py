@@ -5,28 +5,27 @@ from app.graph import graph
 from app.personas import load_all
 
 
-def _persona(persona_id: str) -> dict:
-    return next(persona for persona in load_all() if persona.id == persona_id).model_dump()
-
-
 @pytest.mark.anyio
-async def test_graph_single_persona(monkeypatch) -> None:
+async def test_reply_chain_creates_parented_posts(monkeypatch) -> None:
     async def fake_rag(seed_post: str, k: int = 5) -> str:
         return "RAG context fixture"
 
-    async def fake_llm(*args, **kwargs) -> str:
-        return "réponse de test :love:"
+    async def fake_llm(model, messages, max_tokens, temperature=0.7) -> str:
+        return "[quote=supracomment]test[/quote] réponse de test :love:"
 
     monkeypatch.setattr(graph_module, "_query_rag", fake_rag)
     monkeypatch.setattr(graph_module, "_call_llm", fake_llm)
     monkeypatch.setattr(graph_module.random, "uniform", lambda a, b: 0.0)
+    monkeypatch.setattr(graph_module.random, "randint", lambda a, b: 8)
+    monkeypatch.setattr(graph_module.random, "shuffle", lambda x: x)
 
+    personas = [persona.model_dump() for persona in load_all()[:4]]
     result = await graph.ainvoke(
         {
-            "thread_id": "test",
+            "thread_id": "test-replies",
             "topic": "Mal au ventre",
             "seed_post": "jé mal au ventre",
-            "personas": [_persona("sandra67")],
+            "personas": personas,
             "posts": [],
             "rag_context": "",
             "reply_targets": [],
@@ -34,6 +33,6 @@ async def test_graph_single_persona(monkeypatch) -> None:
         config={"recursion_limit": 100, "max_concurrency": 12},
     )
 
-    assert len(result["posts"]) == 1
-    assert result["posts"][0]["pseudo"] == "Sandra67"
-    assert result["posts"][0]["text"] == "réponse de test :love:"
+    assert len(result["posts"]) == 12
+    assert sum(1 for post in result["posts"] if post["parent_id"]) >= 8
+    assert any(post["parent_id"] for post in result["posts"])

@@ -36,6 +36,26 @@ a:visited {
   box-shadow: 4px 4px 0 #ff99cc;
 }
 
+.connected-banner {
+  background: #003366;
+  color: #ffffff;
+  padding: 4px 10px;
+  font-size: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #cc0066;
+}
+
+.connected-banner .logout-link {
+  background: none;
+  border: none;
+  color: #ffcce5;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 10px;
+}
+
 .header {
   min-height: 48px;
   padding: 13px 12px 8px;
@@ -52,6 +72,17 @@ a:visited {
   width: 100%;
   border-collapse: collapse;
   background: #ffeef5;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 8px;
+  padding: 8px 12px 12px;
+}
+
+.thread-main {
+  min-width: 0;
 }
 
 .main-cell {
@@ -113,6 +144,187 @@ a:visited {
   vertical-align: top;
   background: #ffffff;
   line-height: 1.45;
+}
+
+.post-reply {
+  margin-left: 30px;
+  border-left: 3px solid #e5007e;
+}
+
+.quote-block {
+  background: #ffeef5;
+  border-left: 3px solid #cc0066;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  font-style: italic;
+  font-size: 10px;
+}
+
+.quote-block strong {
+  font-weight: bold;
+  color: #cc0066;
+  font-style: normal;
+}
+
+.vote-bar {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed #ffcce5;
+  display: flex;
+  gap: 8px;
+}
+
+.vote-btn {
+  background: #ffeef5;
+  border: 1px solid #ffcce5;
+  color: #cc0066;
+  padding: 2px 8px;
+  font-size: 10px;
+  cursor: pointer;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.vote-btn.active {
+  background: #e5007e;
+  color: #ffffff;
+  border-color: #cc0066;
+}
+
+.truth-badge {
+  background: #00cc00;
+  color: #ffffff;
+  padding: 1px 4px;
+  margin-left: 6px;
+  font-size: 10px;
+}
+
+.post-truth-revealed {
+  border: 3px solid #00cc00 !important;
+  box-shadow: 0 0 12px #00ff00;
+}
+
+.reveal-banner {
+  background: linear-gradient(180deg, #ffff99 0%, #ffcc00 100%);
+  border: 2px solid #cc9900;
+  padding: 8px 12px;
+  margin: 12px 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.pseudo-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.pseudo-chip {
+  background: #ffeef5;
+  border: 1px solid #ffcce5;
+  padding: 2px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  color: #cc0066;
+}
+
+.stats-bar {
+  background: #ffcce5;
+  border-top: 1px solid #cc0066;
+  border-bottom: 1px solid #cc0066;
+  padding: 4px 12px;
+  font-size: 10px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.counter {
+  font-family: 'Courier New', monospace;
+  background: #000000;
+  color: #00ff00;
+  padding: 1px 4px;
+}
+
+.fake-ad {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.fake-ad img {
+  width: 100%;
+  display: block;
+}
+
+.sidebar-box {
+  border: 1px solid #cc0066;
+  background: #fff7fb;
+}
+
+.sidebar-box h3 {
+  margin: 0;
+  padding: 3px 6px;
+  background: #e5007e;
+  color: #ffffff;
+  font-size: 11px;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-list button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid #ff99cc;
+  padding: 6px;
+  color: #660033;
+  cursor: pointer;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 11px;
+}
+
+.sidebar {
+  margin-top: 16px;
+  padding: 10px;
+  border: 1px solid #cc0066;
+  background: #fff7fb;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin-bottom: 6px;
+}
+
+.sidebar button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid #ff99cc;
+  padding: 6px;
+  color: #660033;
+  cursor: pointer;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 11px;
+}
+
+.sidebar button:hover {
+  background: #ffeef5;
+}
+
+.sidebar button span {
+  float: right;
+  color: #cc0066;
 }
 
 .seed-post {

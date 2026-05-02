@@ -14,6 +14,7 @@ async def main() -> None:
         "personas": personas,
         "posts": [],
         "rag_context": "",
+        "reply_targets": [],
     }
     t0 = time.time()
     result = await graph.ainvoke(

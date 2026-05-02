@@ -1,17 +1,19 @@
 import os
 import json
 import uuid
+import time
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
 from app.graph import graph
+from app.limits import check_thread_quota
 from app.personas import load_all
-from app.state_store import load_thread, save_thread
+from app.state_store import load_thread, save_thread, zadd, zrevrange, zcard
 
 
 @asynccontextmanager
@@ -20,7 +22,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-VERSION = "0.2.0"
+VERSION = "0.4.0"
 
 
 class StartReq(BaseModel):
@@ -48,7 +50,7 @@ async def health() -> dict[str, str]:
 
 @app.get("/api/warm")
 async def warm() -> dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "already_warm"}
 
 
 @app.get("/api/smoke")
@@ -149,9 +151,37 @@ async def info() -> dict[str, bool | int | str]:
     }
 
 
+@app.get("/api/forum/{thread_id}/replay")
+async def replay(thread_id: str) -> dict[str, object]:
+    data = await load_thread(thread_id)
+    if not data or not data.get("posts"):
+        raise HTTPException(404, "thread not found or expired")
+    sorted_posts = sorted(data["posts"], key=lambda post: post["arrived_at"])
+    return {**data, "posts": sorted_posts}
+
+
+@app.get("/api/forum/recent")
+async def recent(limit: int = 10) -> dict[str, list[dict[str, object]]]:
+    raw = await zrevrange("recent_threads", 0, limit - 1)
+    items = []
+    for tid in raw:
+        t = await load_thread(tid)
+        if t:
+            items.append(
+                {
+                    "thread_id": tid,
+                    "topic": t["topic"],
+                    "n_replies": len(t.get("posts", [])),
+                    "completed_at": t.get("completed_at"),
+                }
+            )
+    return {"items": items}
+
+
 @app.post("/api/forum/start")
-async def start(req: StartReq) -> dict[str, str | int]:
+async def start(req: StartReq, request: Request) -> dict[str, str | int]:
     thread_id = str(uuid.uuid4())[:8]
+    ip_h = await check_thread_quota(request)
     all_personas = load_all()
     if req.persona_ids:
         wanted = set(req.persona_ids)
@@ -164,6 +194,7 @@ async def start(req: StartReq) -> dict[str, str | int]:
         "topic": req.topic,
         "seed_post": req.seed_post,
         "persona_ids": [persona["id"] for persona in personas],
+        "_ip_h": ip_h,
     }
     await save_thread(thread_id, data)
     return {"thread_id": thread_id, "n_personas": len(personas)}
@@ -187,6 +218,9 @@ async def stream(thread_id: str) -> EventSourceResponse:
             "personas": personas,
             "posts": [],
             "rag_context": "",
+            "reply_targets": [],
+            "enable_reply_chains": True,
+            "_ip_h": data.get("_ip_h", "unknown"),
         }
         seen_post_ids: set[str] = set()
         yield {"event": "start", "data": json.dumps({"thread_id": thread_id})}
@@ -209,3 +243,22 @@ async def stream(thread_id: str) -> EventSourceResponse:
         event_gen(),
         headers={"X-Accel-Buffering": "no", "Cache-Control": "no-cache"},
     )
+
+
+@app.get("/admin/stats")
+async def admin_stats(key: str = "") -> dict[str, object]:
+    admin_key = os.environ.get("ADMIN_KEY", "")
+    if not admin_key or key != admin_key:
+        raise HTTPException(403, "Forbidden")
+    from app.state_store import _redis
+
+    redis = _redis()
+    today = time.strftime("%Y-%m-%d")
+    tokens_today = int(await redis.get(f"q:tok:GLOBAL:{today}") or 0)
+    llm_calls_today = int(await redis.get(f"q:llm_calls:GLOBAL:{today}") or 0)
+    return {
+        "tokens_today": tokens_today,
+        "llm_calls_today": llm_calls_today,
+        "threads_total": await zcard("recent_threads"),
+        "estimated_cost_eur": round(tokens_today * 0.00015 / 1000 * 0.93, 2),
+    }
