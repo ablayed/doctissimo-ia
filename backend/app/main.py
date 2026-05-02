@@ -1,8 +1,16 @@
 import os
+import json
+import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from sse_starlette.sse import EventSourceResponse
+
+from app.graph import graph
+from app.personas import load_all
+from app.state_store import load_thread, save_thread
 
 
 @asynccontextmanager
@@ -11,7 +19,16 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Doctissimo.IA API", version="0.1.0", lifespan=lifespan)
+VERSION = "0.1.0"
+
+
+class StartReq(BaseModel):
+    topic: str
+    seed_post: str
+    persona_ids: list[str] | None = None
+
+
+app = FastAPI(title="Doctissimo.IA API", version=VERSION, lifespan=lifespan)
 
 allowed_origin = os.environ.get("ALLOWED_ORIGIN", "*")
 app.add_middleware(
@@ -25,7 +42,7 @@ app.add_middleware(
 
 @app.get("/api/health")
 async def health() -> dict[str, str]:
-    return {"status": "ok", "version": "0.1.0"}
+    return {"status": "ok", "version": VERSION}
 
 
 @app.get("/api/warm")
@@ -53,3 +70,65 @@ async def smoke() -> dict[str, str]:
         return {"status": "ok", "azure_says": text.strip()}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
+
+
+@app.post("/api/forum/start")
+async def start(req: StartReq) -> dict[str, str | int]:
+    thread_id = str(uuid.uuid4())[:8]
+    all_personas = load_all()
+    if req.persona_ids:
+        wanted = set(req.persona_ids)
+        personas = [persona.model_dump() for persona in all_personas if persona.id in wanted]
+    else:
+        personas = [persona.model_dump() for persona in all_personas]
+    personas = personas[:30]
+    data = {
+        "thread_id": thread_id,
+        "topic": req.topic,
+        "seed_post": req.seed_post,
+        "persona_ids": [persona["id"] for persona in personas],
+    }
+    await save_thread(thread_id, data)
+    return {"thread_id": thread_id, "n_personas": len(personas)}
+
+
+@app.get("/api/forum/{thread_id}/stream")
+async def stream(thread_id: str) -> EventSourceResponse:
+    data = await load_thread(thread_id)
+    if not data:
+        raise HTTPException(404, "thread not found")
+
+    all_personas = load_all()
+    wanted = set(data["persona_ids"])
+    personas = [persona.model_dump() for persona in all_personas if persona.id in wanted]
+
+    async def event_gen():
+        initial_state = {
+            "thread_id": thread_id,
+            "topic": data["topic"],
+            "seed_post": data["seed_post"],
+            "personas": personas,
+            "posts": [],
+            "rag_context": "",
+        }
+        seen_post_ids: set[str] = set()
+        yield {"event": "start", "data": json.dumps({"thread_id": thread_id})}
+        async for chunk in graph.astream(
+            initial_state,
+            stream_mode="updates",
+            config={"recursion_limit": 100, "max_concurrency": 12},
+        ):
+            for delta in chunk.values():
+                if not delta:
+                    continue
+                for post in delta.get("posts", []):
+                    if post["id"] in seen_post_ids:
+                        continue
+                    seen_post_ids.add(post["id"])
+                    yield {"event": "post", "data": json.dumps(post)}
+        yield {"event": "done", "data": "{}"}
+
+    return EventSourceResponse(
+        event_gen(),
+        headers={"X-Accel-Buffering": "no", "Cache-Control": "no-cache"},
+    )
