@@ -21,14 +21,14 @@ async def check_thread_quota(request: Request) -> str:
     redis = _redis()
     ip_h = hashed_ip(request)
     hour_key = f"q:threads:{ip_h}:{int(time.time() // 3600)}"
-    count = await redis.incr(hour_key)
+    count = redis.incr(hour_key)
     if count == 1:
-        await redis.expire(hour_key, 3600)
+        redis.expire(hour_key, 3600)
     if count > MAX_THREADS_PER_IP_PER_HOUR:
         raise HTTPException(429, "Too many threads. Slow down kikoo.")
 
     day_key = f"q:tok:{ip_h}:{time.strftime('%Y-%m-%d')}"
-    used = int(await redis.get(day_key) or 0)
+    used = int(redis.get(day_key) or 0)
     if used >= MAX_TOKENS_PER_IP_PER_DAY:
         raise HTTPException(429, "Daily token quota exceeded.")
     return ip_h
@@ -44,15 +44,15 @@ async def record_tokens(ip_h: str, n_tokens: int, thread_id: str | None = None) 
     day_key = f"q:tok:{ip_h}:{today}"
     thread_key = f"q:thread_tok:{thread_id}" if thread_id else None
     if thread_key:
-        await redis.incrby(thread_key, n_tokens)
-        await redis.expire(thread_key, 86400 * 7)
-    await redis.incrby(day_key, n_tokens)
-    await redis.expire(day_key, 86400 * 2)
-    await redis.incrby(f"q:tok:GLOBAL:{today}", n_tokens)
-    await redis.incr(f"q:llm_calls:GLOBAL:{today}")
+        redis.incrby(thread_key, n_tokens)
+        redis.expire(thread_key, 86400 * 7)
+    redis.incrby(day_key, n_tokens)
+    redis.expire(day_key, 86400 * 2)
+    redis.incrby(f"q:tok:GLOBAL:{today}", n_tokens)
+    redis.incr(f"q:llm_calls:GLOBAL:{today}")
 
 
 async def thread_quota_exceeded(thread_id: str) -> bool:
     redis = _redis()
-    used = int(await redis.get(f"q:thread_tok:{thread_id}") or 0)
+    used = int(redis.get(f"q:thread_tok:{thread_id}") or 0)
     return used > MAX_TOKENS_PER_THREAD
