@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://ablaye-doctissimo-ia-api.hf.space/api/:path*"
+      "destination": "https://ablayed-doctissimo-ia-api.hf.space/api/:path*"
     }
   ]
 }
