@@ -1,0 +1,156 @@
+:root {
+  font-family: Verdana, Geneva, sans-serif;
+  color: #33001a;
+  background: #ffecf6;
+  font-size: 11px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 770px;
+  background:
+    repeating-linear-gradient(0deg, rgba(229, 0, 126, 0.05) 0 1px, transparent 1px 12px),
+    #ffecf6;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 11px;
+}
+
+a {
+  color: #0000ff;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #800080;
+}
+
+.doctissimo-page {
+  width: 770px;
+  margin: 8px auto;
+  border: 1px solid #cc0066;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #ff99cc;
+}
+
+.header {
+  min-height: 48px;
+  padding: 13px 12px 8px;
+  border-bottom: 3px double #ffffff;
+  background: linear-gradient(180deg, #e5007e 0%, #ff66b3 55%, #ffcce5 100%);
+  color: #ffffff;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #99004d;
+}
+
+.layout-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffeef5;
+}
+
+.main-cell {
+  padding: 12px;
+  border-top: 1px solid #ff99cc;
+}
+
+.post {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+  background: #ffffff;
+}
+
+.post:nth-child(even) {
+  background: #ffeef5;
+}
+
+.post-avatar {
+  width: 112px;
+  padding: 6px;
+  vertical-align: top;
+  text-align: center;
+  border: 1px solid #ff99cc;
+  background: #ffcce5;
+}
+
+.post-content {
+  min-height: 96px;
+  padding: 10px;
+  border: 1px solid #ff99cc;
+  background: #ffffff;
+  line-height: 1.45;
+}
+
+.quote {
+  margin: 6px 0;
+  padding: 6px 8px;
+  border-left: 4px solid #cc0066;
+  background: #fff7fb;
+  color: #5a0030;
+}
+
+.btn-pink {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid #99004d;
+  border-top-color: #ff99cc;
+  border-left-color: #ff99cc;
+  background: linear-gradient(180deg, #fff0f8 0%, #ff66b3 48%, #e5007e 100%);
+  color: #ffffff;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #99004d;
+  cursor: pointer;
+}
+
+.btn-pink:active {
+  border: 1px solid #ff99cc;
+  border-top-color: #99004d;
+  border-left-color: #99004d;
+}
+
+.new-badge {
+  color: #e5007e;
+  font-weight: bold;
+  animation: blink 0.8s steps(1, end) infinite;
+}
+
+.visitor-counter {
+  margin-top: 8px;
+  padding: 5px;
+  border: 1px inset #ff99cc;
+  background: #fff7fb;
+  text-align: center;
+}
+
+.visitor-counter span {
+  color: #cc0066;
+  font-weight: bold;
+}
+
+footer {
+  padding: 7px 10px;
+  border-top: 1px solid #cc0066;
+  background: #ffcce5;
+  color: #660033;
+  text-align: center;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
