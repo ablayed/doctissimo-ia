@@ -44,7 +44,7 @@ export default function ModemModal({
   }
 
   return (
-    <div className="modem-backdrop">
+    <div className="modem-backdrop" data-modal="modem">
       <div className="modem-window">
         <div className="modem-titlebar">
           <span>Connexion à Internet - Doctissimo.IA</span>

@@ -28,7 +28,7 @@ export default function PseudoModal({ open, onSubmit, onSkip }: Props) {
   if (!open) return null
 
   return (
-    <div className="pseudo-modal-backdrop">
+    <div className="pseudo-modal-backdrop" data-modal="pseudo">
       <div className="pseudo-modal">
         <div className="pseudo-modal-titlebar">
           <span>Bienvenue dans la communaute Doctissimo.IA !</span>

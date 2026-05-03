@@ -1,5 +1,14 @@
 /* ========== RESET & BASE ========== */
 * { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --z-popup-min: 1000;
+  --z-popup-max: 1500;
+  --z-bsod: 1800;
+  --z-modal-modem: 2000;
+  --z-modal-pseudo: 2100;
+  --z-modal-reveal: 2200;
+  --z-safety-banner: 3000;
+}
 html, body {
   background: #FFFFFF;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -512,7 +521,7 @@ input[type="text"]:focus, textarea:focus {
   position: fixed;
   inset: 0;
   background: linear-gradient(135deg, #003366 0%, #001A33 100%);
-  z-index: 9999;
+  z-index: var(--z-modal-modem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -634,7 +643,7 @@ input[type="text"]:focus, textarea:focus {
   position: fixed; inset: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(2px);
-  z-index: 5000;
+  z-index: var(--z-modal-pseudo);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -711,7 +720,7 @@ input[type="text"]:focus, textarea:focus {
 .reveal-backdrop {
   position: fixed; inset: 0;
   background: rgba(0, 0, 51, 0.7);
-  z-index: 5000;
+  z-index: var(--z-modal-reveal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -802,7 +811,7 @@ input[type="text"]:focus, textarea:focus {
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 4999;
+  z-index: calc(var(--z-modal-reveal) - 1);
 }
 .confetti-piece {
   position: absolute;
@@ -842,6 +851,8 @@ input[type="text"]:focus, textarea:focus {
   color: #CC0000;
   font-weight: bold;
   font-family: Tahoma, Verdana, sans-serif;
+  position: relative;
+  z-index: var(--z-safety-banner);
 }
 .footer .frontpage-credit {
   font-style: italic;

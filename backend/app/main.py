@@ -96,6 +96,19 @@ async def smoke() -> dict[str, str]:
         return {"status": "error", "detail": str(exc)}
 
 
+@app.get("/api/popup")
+async def popup(symptom: str = "") -> dict[str, object]:
+    """Generate a satirical 2003-style popup ad based on the user's symptom."""
+    from app.popups import generate_popup
+
+    if not symptom:
+        return {"error": "no symptom"}
+    data = await generate_popup(symptom)
+    if not data:
+        return {"error": "no popup", "fallback": True}
+    return data
+
+
 async def _azure_ok() -> bool:
     if not (os.environ.get("AZURE_OPENAI_ENDPOINT") and os.environ.get("AZURE_OPENAI_API_KEY")):
         return False

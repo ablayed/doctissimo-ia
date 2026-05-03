@@ -1,0 +1,29 @@
+.bsod-popup {
+  position: fixed;
+  inset: 0;
+  background: #0000AA;
+  color: #FFFFFF;
+  font-family: "Lucida Console", Consolas, monospace;
+  font-size: 16px;
+  padding: 8vh 10vw;
+  z-index: var(--z-bsod);
+  line-height: 1.6;
+  cursor: pointer;
+}
+.bsod-popup h1 {
+  background: #FFFFFF;
+  color: #0000AA;
+  display: inline-block;
+  font-size: 18px;
+  padding: 0 8px;
+}
+.bsod-popup p { margin-top: 16px; }
+.bsod-indent { margin-left: 32px; }
+.bsod-continue {
+  animation: bsod-blink 1s steps(2) infinite;
+  margin-top: 32px;
+  text-align: center;
+}
+@keyframes bsod-blink {
+  50% { opacity: 0; }
+}

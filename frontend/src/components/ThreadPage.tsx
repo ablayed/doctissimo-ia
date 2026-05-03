@@ -20,6 +20,7 @@ import { useSoundPrefs } from '../hooks/useSound'
 import { useUser } from '../hooks/useUser'
 import { useVisitorCounter } from '../hooks/useVisitorCounter'
 import { useVotes } from '../hooks/useVotes'
+import { PopupRoot } from '../popups'
 import { playSound } from '../utils/sounds'
 
 type StartResponse = {
@@ -126,6 +127,7 @@ export default function ThreadPage() {
   )
 
   const sortedPosts = useMemo(() => posts.slice().sort((a, b) => a.arrived_at - b.arrived_at), [posts])
+  const currentPopupSymptom = threadId ? seed : seedPost
 
   function closeStream() {
     eventSourceRef.current?.close()
@@ -409,6 +411,7 @@ export default function ThreadPage() {
         </div>
         <Footer counter={counter.toLocaleString('fr-FR', { minimumIntegerDigits: 7, useGrouping: false })} />
       </div>
+      <PopupRoot currentSymptom={currentPopupSymptom} />
     </>
   )
 }

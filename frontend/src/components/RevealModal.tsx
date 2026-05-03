@@ -55,7 +55,7 @@ export default function RevealModal({ open, onClose, votes, posts, truthTellerId
           />
         ))}
       </div>
-      <div className="reveal-backdrop">
+      <div className="reveal-backdrop" data-modal="reveal">
         <div className="reveal-modal">
           <div className="reveal-titlebar">LA VERITE EST REVELEE</div>
           <div className="reveal-body">
