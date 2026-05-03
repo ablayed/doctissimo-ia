@@ -582,6 +582,23 @@ input[type="text"]:focus, textarea:focus {
   font-size: 11px;
   font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
+.mode-56k-toggle {
+  position: fixed;
+  bottom: 8px;
+  left: 8px;
+  background: #FFCCE5;
+  color: #800040;
+  border: 2px outset #FFFFFF;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  z-index: 999;
+}
+.mode-56k-toggle.is-on {
+  background: #00FF00;
+  color: #000000;
+}
 
 /* ========== UNDER CONSTRUCTION ========== */
 .construction-strip {
@@ -911,7 +928,7 @@ input[type="text"]:focus, textarea:focus {
 .demo-toggle {
   position: fixed;
   left: 8px;
-  bottom: 8px;
+  bottom: 42px;
   z-index: 80;
   background: #FFFFFF;
   border: 2px solid #CC0066;
@@ -937,6 +954,25 @@ input[type="text"]:focus, textarea:focus {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+body.mode-56k img {
+  animation: load-56k 4s steps(20) both;
+  clip-path: inset(0 0 100% 0);
+}
+body.mode-56k .post {
+  animation: load-56k 2s steps(15) both;
+}
+@keyframes load-56k {
+  0% {
+    clip-path: inset(0 0 100% 0);
+    filter: blur(2px);
+  }
+  50% { filter: blur(1px); }
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+  }
 }
 
 /* ========== MOBILE FALLBACK ========== */

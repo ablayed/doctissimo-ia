@@ -5,6 +5,7 @@ import ConstructionScroller from './ConstructionScroller'
 import DemoToggle from './DemoToggle'
 import Footer from './Footer'
 import Header from './Header'
+import { Mode56KToggle } from './Mode56KToggle'
 import ModemModal from './ModemModal'
 import NavTabs from './NavTabs'
 import PostCard, { type ForumPost } from './PostCard'
@@ -295,6 +296,7 @@ export default function ThreadPage() {
     <>
       {!modemReady && <ModemModal onComplete={() => setModemReady(true)} onPlayModem={() => playSound('modem', 0.25)} />}
       <SoundToggle muted={sound.muted} onToggle={() => sound.setMuted(!sound.muted)} />
+      <Mode56KToggle />
       <ConstructionScroller />
       <DemoToggle onSelect={loadDemo} />
       <PseudoModal
