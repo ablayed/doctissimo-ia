@@ -1,4 +1,6 @@
+import inspect
 import os
+import time
 
 from upstash_vector import Index
 
@@ -22,6 +24,16 @@ def _embedding_model():
 
 
 async def query(text: str, k: int = 5) -> str:
+    try:
+        from app.state_store import _redis
+
+        today = time.strftime("%Y-%m-%d")
+        result = _redis().incr(f"q:rag:GLOBAL:{today}")
+        if inspect.isawaitable(result):
+            await result
+    except Exception:
+        pass
+
     if os.environ.get("ENABLE_BGE_RAG") != "1":
         return FALLBACK_CONTEXT
 

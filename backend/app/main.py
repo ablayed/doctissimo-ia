@@ -291,6 +291,7 @@ async def stream(thread_id: str):
 
 
 @app.get("/admin/stats")
+@app.get("/api/admin/stats")
 async def admin_stats(key: str = ""):
     admin_key = os.environ.get("ADMIN_KEY", "")
     if not admin_key or key != admin_key:
@@ -300,12 +301,14 @@ async def admin_stats(key: str = ""):
     redis = _redis()
     today = time.strftime("%Y-%m-%d")
     tokens_today = int(await redis.get(f"q:tok:GLOBAL:{today}") or 0)
-    llm_calls_today = int(await redis.get(f"q:llm_calls:GLOBAL:{today}") or 0)
     return {
         "tokens_today": tokens_today,
-        "llm_calls_today": llm_calls_today,
-        "threads_total": await zcard("recent_threads"),
-        "estimated_cost_eur": round(tokens_today * 0.00015 / 1000 * 0.93, 2),
+        "llm_calls_today": int(await redis.get(f"q:llm_calls:GLOBAL:{today}") or 0),
+        "threads_today": await zcard("recent_threads"),
+        "estimated_cost_eur": round(tokens_today * 0.00015 / 1000 * 0.93, 4),
+        "rag_queries_today": int(await redis.get(f"q:rag:GLOBAL:{today}") or 0),
+        "uptime_seconds": int(time.time() - APP_START_TIME),
+        "personas_loaded": len(load_all()),
     }
 
 
