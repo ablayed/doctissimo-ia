@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import UnderConstructionStrip from './UnderConstructionStrip'
+import { playSound } from '../utils/sounds'
 
 const STORAGE_KEY = 'doctissimo-modem-seen'
 const TTL_MS = 24 * 60 * 60 * 1000
@@ -34,6 +35,7 @@ export default function ModemModal({
         window.clearInterval(interval)
         setStage('connected')
         window.setTimeout(() => {
+          playSound('xp-startup', 0.4)
           localStorage.setItem(STORAGE_KEY, Date.now().toString())
           onComplete()
         }, 1200)

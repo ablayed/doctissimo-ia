@@ -20,6 +20,7 @@ import { useSoundPrefs } from '../hooks/useSound'
 import { useUser } from '../hooks/useUser'
 import { useVisitorCounter } from '../hooks/useVisitorCounter'
 import { useVotes } from '../hooks/useVotes'
+import { playSound } from '../utils/sounds'
 
 type StartResponse = {
   thread_id: string
@@ -224,7 +225,7 @@ export default function ThreadPage() {
           window.clearTimeout(slowTimerRef.current)
           slowTimerRef.current = null
         }
-        sound.playDing()
+        playSound('aol-mail', 0.35)
       })
       source.addEventListener('done', () => {
         closeStream()
@@ -290,7 +291,7 @@ export default function ThreadPage() {
 
   return (
     <>
-      {!modemReady && <ModemModal onComplete={() => setModemReady(true)} onPlayModem={sound.playModem} />}
+      {!modemReady && <ModemModal onComplete={() => setModemReady(true)} onPlayModem={() => playSound('modem', 0.25)} />}
       <SoundToggle muted={sound.muted} onToggle={() => sound.setMuted(!sound.muted)} />
       <ConstructionScroller />
       <DemoToggle onSelect={loadDemo} />

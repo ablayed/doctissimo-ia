@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import type { ForumPost } from './PostCard'
+import { playSound } from '../utils/sounds'
 
 type Props = {
   open: boolean
@@ -36,6 +37,10 @@ export default function RevealModal({ open, onClose, votes, posts, truthTellerId
       })),
     [],
   )
+
+  useEffect(() => {
+    if (open) playSound('tada', 0.5)
+  }, [open])
 
   if (!open) return null
 
