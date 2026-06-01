@@ -1,5 +1,8 @@
 # Doctissimo.IA
 
+<img width="1880" height="917" alt="image" src="https://github.com/user-attachments/assets/1a0f1135-f4dc-45f8-94a8-5d323f55056a" />
+
+
 Doctissimo.IA is a DEFENDHACK 2026 parody of a 2003 Doctissimo forum: a user posts a health question, 30 AI forum personas answer in real time, and one emergency nurse persona is grounded on medical RAG. The project is a hackathon prototype and not medical advice.
 
 Live URL: https://doctissimo-ia.vercel.app
